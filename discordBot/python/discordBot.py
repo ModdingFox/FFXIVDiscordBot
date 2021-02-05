@@ -153,7 +153,7 @@ def updateVoiceChatLog(discordId):
 discordClient=discord.Client()
 discordChannelId="807001358682685461"
 discordToken=''
-discordChannels=["club-spectrem-bot"]
+discordChannels=["club-spectrum-bot"]
 
 baseUrl = "https://127.0.0.1/Rest/"
 
