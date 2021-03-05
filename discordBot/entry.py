@@ -7,6 +7,7 @@ import loggingModule
 import botManagement
 import clubMenu
 import extraStuff
+import lodestone;
 import privateCategories
 import userBios
 
@@ -31,6 +32,7 @@ moduleVoiceLogging = loggingModule.voiceLoggingClass(client, settingsMySql);
 client.add_cog(botManagement.botManagementClass(client));
 client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));
 client.add_cog(extraStuff.extraStuffClass(client));
+client.add_cog(lodestone.lodestoneClass(client));
 client.add_cog(privateCategories.privateCategoriesClass(client, settingsMySql));
 client.add_cog(userBios.userBiosClass(client, settingsMySql));
 

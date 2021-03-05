@@ -172,7 +172,7 @@ class userBiosClass(commands.Cog, name='Bios'):
                     if bioInfo is not None and bioInfo["bioName"] is not None and bioInfo["bioText"] is not None and bioInfo["bioImage"] is not None:
                         embedImage = discord.Embed();
                         embedImage.set_image(url=bioInfo["bioImage"]);
-                        message = "Name: {0}\nAbout:\n{1}".format(bioInfo["bioName"], bioInfo["bioText"]);
+                        message = "Name: {0}\nAbout:\n{1}".format(bioInfo["bioName"], bioInfo["bioText"])[:2000];
                         messageId = self.sqlGetBioMessageId(guild.id, userId, channelId);
                         if messageId is None:
                             sentMessage = await channel.send(message, embed=embedImage);
@@ -208,13 +208,13 @@ class userBiosClass(commands.Cog, name='Bios'):
                 if bioInfo is not None and bioInfo["bioImage"] is not None:
                     embedImage = discord.Embed();
                     embedImage.set_image(url=bioInfo["bioImage"]);
-                    await ctx.send("Name: {0}\nAbout:\n{1}".format(bioInfo["bioName"], bioInfo["bioText"]), embed=embedImage);
+                    await ctx.send("Name: {0}\nAbout:\n{1}".format(bioInfo["bioName"], bioInfo["bioText"])[:2000], embed=embedImage);
         elif userMatch is not None:
             bioInfo = self.sqlGetBio(ctx.guild.id, userMatch.group(1));
             if bioInfo is not None:
                 embedImage = discord.Embed();
                 embedImage.set_image(url=bioInfo["bioImage"]);
-                await ctx.send("Name: {0}\nAbout:\n{1}".format(bioInfo["bioName"], bioInfo["bioText"]), embed=embedImage);
+                await ctx.send("Name: {0}\nAbout:\n{1}".format(bioInfo["bioName"], bioInfo["bioText"])[:2000], embed=embedImage);
             else:
                 await ctx.send("No bio found for {0}".format(target));
         else:

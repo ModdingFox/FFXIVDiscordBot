@@ -1,3 +1,4 @@
+*.swp
 siteRoot/img
 siteRoot/npm
 *.json
