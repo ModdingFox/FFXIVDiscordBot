@@ -1,2 +1,4 @@
 siteRoot/img
 siteRoot/npm
+*.json
+*.pyc
