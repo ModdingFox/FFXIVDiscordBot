@@ -38,9 +38,9 @@ class privateCategoriesClass(commands.Cog, name='Private Categories'):
             with connection.cursor() as cursor:
                 sql = "SELECT distinct ownerDiscordUserId FROM discord.privateRooms WHERE guildId = %s AND categoryId = %s";
                 cursor.execute(sql, (guildId, categoryId));
-                result = cursor.fetchone();
-                if result is not None:
-                    result=result["ownerDiscordUserId"];
+                results = cursor.fetchone();
+                if results is not None:
+                    result=results["ownerDiscordUserId"];
         finally:
                 connection.close();
         

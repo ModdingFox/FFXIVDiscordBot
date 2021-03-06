@@ -2,14 +2,17 @@
 
 from settings import discordSettings, mySqlSettings, ldapSettings
 
-import loggingModule
+#import loggingModule
 
 import botManagement
 import clubMenu
 import extraStuff
 import lodestone;
 import privateCategories
+import reactRoleAssignment
+import textLogging
 import userBios
+import voiceLogging
 
 import discord
 from discord.ext import commands
@@ -25,8 +28,8 @@ intents.members = True;
 client = commands.Bot(command_prefix=settingsDiscord.commandPrefix, intents=intents);
 
 #Load Logging Modules
-moduleTextLogging = loggingModule.textLoggingClass(client, settingsMySql);
-moduleVoiceLogging = loggingModule.voiceLoggingClass(client, settingsMySql);
+#moduleTextLogging = loggingModule.textLoggingClass(client, settingsMySql);
+#moduleVoiceLogging = loggingModule.voiceLoggingClass(client, settingsMySql);
 
 #Load Cogs
 client.add_cog(botManagement.botManagementClass(client));
@@ -34,7 +37,10 @@ client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));
 client.add_cog(extraStuff.extraStuffClass(client));
 client.add_cog(lodestone.lodestoneClass(client));
 client.add_cog(privateCategories.privateCategoriesClass(client, settingsMySql));
+client.add_cog(reactRoleAssignment.reactRoleAssignmentClass(client, settingsMySql));
+client.add_cog(textLogging.textLoggingClass(client, settingsMySql));
 client.add_cog(userBios.userBiosClass(client, settingsMySql));
+client.add_cog(voiceLogging.voiceLoggingClass(client, settingsMySql));
 
 @client.event
 async def on_ready():
