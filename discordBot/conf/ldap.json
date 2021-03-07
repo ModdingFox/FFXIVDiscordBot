@@ -1,0 +1,10 @@
+{
+    "host": "ldap://127.0.0.1",
+    "dn": "dc=example,dc=com",
+    "user": "cn=ldapadm",
+    "password": "",
+    "managementGroup": "cn=Management,ou=Group",
+    "memberGroup": "cn=Members,ou=Group",
+    "banGroup": "cn=Banned,ou=Group"
+
+}
