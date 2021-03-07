@@ -5,7 +5,6 @@ from discord.ext import tasks
 import pymysql.cursors
 
 #ToDo:
-#    mySql Table Init
 #    Work for any # of guilds
 
 class voiceLoggingClass(commands.Cog, name='Voice Logging'):
@@ -46,8 +45,26 @@ class voiceLoggingClass(commands.Cog, name='Voice Logging'):
         
         return result;
     
+    def initTables(self):
+        result = False;
+        
+        connection = pymysql.connect(host = self.settingsMySql.host, user = self.settingsMySql.user, password = self.settingsMySql.password, cursorclass=pymysql.cursors.DictCursor);
+        
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("CREATE DATABASE IF NOT EXISTS discord COLLATE utf8mb4_unicode_ci");
+                cursor.execute("CREATE TABLE IF NOT EXISTS discord.voiceChatLog ( id                    INT       NOT NULL AUTO_INCREMENT, discordUserId         TEXT      NOT NULL, userName              TEXT      NOT NULL, channelId             TEXT          NULL, channelName           TEXT      NOT NULL, joinChannelTimeStamp  TIMESTAMP     NULL, leaveChannelTimestamp TIMESTAMP     NULL, PRIMARY KEY (id) )");
+                cursor.execute("DROP TRIGGER IF EXISTS discord.discord_voiceChatLog_dates");
+                cursor.execute("CREATE TRIGGER discord.discord_voiceChatLog_dates BEFORE INSERT ON discord.voiceChatLog FOR EACH ROW SET     NEW.joinChannelTimeStamp      = IFNULL(NEW.joinChannelTimeStamp      , NOW())");
+                result = True;
+        finally:
+                connection.close();
+        
+        return result;
+    
     def __init__(self, discordClient, settingsMySql):
         self.settingsMySql = settingsMySql;
+        self.initTables();
         
         @discordClient.listen()
         async def on_voice_state_update(member, before, after):

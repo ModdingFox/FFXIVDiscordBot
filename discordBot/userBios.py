@@ -6,9 +6,6 @@ from discord.ext import tasks
 import pymysql.cursors
 import re
 
-#ToDo:
-#    mySql Table Init
-
 class userBiosClass(commands.Cog, name='Bios'):
     def sqlGetBio(self, guildId, discordUserId):
         result = None;
@@ -161,7 +158,23 @@ class userBiosClass(commands.Cog, name='Bios'):
             connection.close();
         
         return result;        
-   
+    
+    def initTables(self):
+        result = False;
+        
+        connection = pymysql.connect(host = self.settingsMySql.host, user = self.settingsMySql.user, password = self.settingsMySql.password, cursorclass=pymysql.cursors.DictCursor);
+        
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("CREATE DATABASE IF NOT EXISTS discord COLLATE utf8mb4_unicode_ci");
+                cursor.execute("CREATE TABLE IF NOT EXISTS discord.bios ( guildId       TEXT NOT NULL, discordUserId TEXT NOT NULL, bioName       TEXT, bioImage      TEXT, bioText       TEXT )");
+                cursor.execute("CREATE TABLE IF NOT EXISTS discord.biosMessages ( guildId       TEXT NOT NULL, discordUserId TEXT NOT NULL, channelId     TEXT NOT NULL, messageId     TEXT NOT NULL )");
+                result = True;
+        finally:
+                connection.close();
+        
+        return result;
+    
     async def updateGuildBioChannels(self, guild):
         for role in guild.roles:
             for channelId in discordUtils.getChannelIdsByName(guild, "bio-{0}".format(role.name.lower()).replace(" ", "")):
@@ -195,6 +208,7 @@ class userBiosClass(commands.Cog, name='Bios'):
     def __init__(self, discordClient, settingsMySql):
         self.discordClient = discordClient;
         self.settingsMySql = settingsMySql;
+        self.initTables();
         self.updateBiosTask.start();
     
     @commands.command(brief="Gets the bio for the target user or bio's for the target role", description="Gets the bio for the target user or bio's for the target role")

@@ -1,9 +1,6 @@
 from discord.ext import commands
 import pymysql.cursors
 
-#ToDo:
-#    mySql Table Init
-
 class clubMenuClass(commands.Cog, name='Club Menu'):
     def removeMenuItem(self, guildId, menuItem, menuType):
         result = False
@@ -55,10 +52,26 @@ class clubMenuClass(commands.Cog, name='Club Menu'):
                 connection.close();
         
         return result;
-
+    
+    def initTables(self):
+        result = False;
+        
+        connection = pymysql.connect(host = self.settingsMySql.host, user = self.settingsMySql.user, password = self.settingsMySql.password, cursorclass=pymysql.cursors.DictCursor);
+        
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("CREATE DATABASE IF NOT EXISTS discord COLLATE utf8mb4_unicode_ci");
+                cursor.execute("CREATE TABLE IF NOT EXISTS discord.menuItems( guildId  TEXT NOT NULL, menuItem TEXT NOT NULL, itemCost INT  NOT NULL, menuType TEXT NOT NULL )");
+                result = True;
+        finally:
+                connection.close();
+        
+        return result;
+    
     def __init__(self, discordClient, settingsMySql):
         self.discordClient = discordClient;
         self.settingsMySql = settingsMySql;
+        self.initTables();
         
     @commands.command(brief="Creates a new drink menu item or changes an existing ones price", description="Creates a new drink menu item or changes an existing ones price")
     async def addDrinkItem(self, ctx, itemName, cost):

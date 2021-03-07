@@ -6,9 +6,6 @@ from discord.utils import get
 import re
 import pymysql.cursors
 
-#ToDo:
-#    mySql Table Init
-
 class reactRoleAssignmentClass(commands.Cog, name='React Role Assignment'):
     def sqlEmoteRoleDelete(self, guildId, messageId):
         result = False;
@@ -60,11 +57,26 @@ class reactRoleAssignmentClass(commands.Cog, name='React Role Assignment'):
                 connection.close();
 
         return result;
-
+    
+    def initTables(self):
+        result = False;
+        
+        connection = pymysql.connect(host = self.settingsMySql.host, user = self.settingsMySql.user, password = self.settingsMySql.password, cursorclass=pymysql.cursors.DictCursor);
+        
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("CREATE DATABASE IF NOT EXISTS discord COLLATE utf8mb4_unicode_ci");
+                cursor.execute("CREATE TABLE IF NOT EXISTS discord.emoteRoles ( guildId   TEXT NOT NULL, messageId TEXT NOT NULL, roleId    TEXT NOT NULL, emote     TEXT NOT NULL )");
+                result = True;
+        finally:
+                connection.close();
+        
+        return result;
     
     def __init__(self, discordClient, settingsMySql):
         self.discordClient = discordClient;
         self.settingsMySql = settingsMySql;
+        self.initTables();
         
         @discordClient.listen()
         async def on_raw_reaction_add(payload):

@@ -9,9 +9,6 @@ import time
 import datetime
 from datetime import datetime
 
-#ToDo:
-#    mySql Table Init
-
 class privateCategoriesClass(commands.Cog, name='Private Categories'):
     def sqlPrivateCategoryCreate(self, guildId, discordId, userName, categoryId):
         result = False;
@@ -79,6 +76,21 @@ class privateCategoriesClass(commands.Cog, name='Private Categories'):
         
         return result;
     
+    def initTables(self):
+        result = False;
+        
+        connection = pymysql.connect(host = self.settingsMySql.host, user = self.settingsMySql.user, password = self.settingsMySql.password, cursorclass=pymysql.cursors.DictCursor);
+        
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("CREATE DATABASE IF NOT EXISTS discord COLLATE utf8mb4_unicode_ci");
+                cursor.execute("CREATE TABLE IF NOT EXISTS discord.privateRooms ( guildId            TEXT NOT NULL, ownerDiscordUserId TEXT NOT NULL, userName           TEXT NOT NULL, categoryId         TEXT NOT NULL )");
+                result = True;
+        finally:
+                connection.close();
+        
+        return result;
+    
     @tasks.loop(minutes=30)
     async def cleanPrivateChats(self):
         for guild in self.discordClient.guilds:
@@ -119,6 +131,7 @@ class privateCategoriesClass(commands.Cog, name='Private Categories'):
     def __init__(self, discordClient, settingsMySql):
         self.discordClient = discordClient;
         self.settingsMySql = settingsMySql;
+        self.initTables();
         self.cleanPrivateChats.start();
         
     @commands.command(brief="Creates a private category with voice and text", description="Creates a private category with voice and text")
