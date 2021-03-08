@@ -1,0 +1,865 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 1,
+  "iteration": 1615213080390,
+  "links": [],
+  "panels": [
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "left"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 12,
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "userName"
+          }
+        ]
+      },
+      "pluginVersion": "7.0.1",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT distinct userName, CONCAT(\"<@\", discordUserId, \">\") AS discordUserId\nFROM discord.voiceChatLog\nWHERE\n(\n    (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n    OR $__timeFilter(joinChannelTimeStamp)\n    OR $__timeFilter(leaveChannelTimestamp)\n    OR\n    (\n        leaveChannelTimestamp IS NULL\n        AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n    )\n)\nAND (userName IN ($User) OR \"All\" IN ($User))\nAND (channelName IN ($Channel) OR \"All\" IN ($Channel))",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "discordUserId Link Mappings",
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "left"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 14,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.0.1",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT distinct channelName, CONCAT(\"<\", channelId, \">\") AS channelId\nFROM discord.voiceChatLog\nWHERE\n(\n    (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n    OR $__timeFilter(joinChannelTimeStamp)\n    OR $__timeFilter(leaveChannelTimestamp)\n    OR\n    (\n        leaveChannelTimestamp IS NULL\n        AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n    )\n)\nAND (userName IN ($User) OR \"All\" IN ($User))\nAND (channelName IN ($Channel) OR \"All\" IN ($Channel))",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "channelId Mapping",
+      "type": "table"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "FCMySqlDB",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "userName"
+              ],
+              "type": "column"
+            }
+          ],
+          "metricColumn": "userName",
+          "rawQuery": true,
+          "rawSql": "SELECT * FROM\n(\n    SELECT\n        userName AS metric,\n        CASE\n            WHEN channelId IS     NULL AND leaveChannelTimestamp IS     NULL THEN UNIX_TIMESTAMP(now())\n            WHEN channelId IS     NULL AND leaveChannelTimestamp IS NOT NULL THEN UNIX_TIMESTAMP(leaveChannelTimestamp)\n            WHEN channelId IS NOT NULL AND leaveChannelTimestamp IS     NULL THEN UNIX_TIMESTAMP(now())\n            WHEN channelId IS NOT NULL AND leaveChannelTimestamp IS NOT NULL THEN UNIX_TIMESTAMP(leaveChannelTimestamp)\n            ELSE 0\n        END AS \"time\",\n        CASE\n            WHEN channelId IS NULL THEN 0\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            WHEN leaveChannelTimestamp IS NOT NULL THEN (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE -1\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel) OR channelId IS NULL)\n    GROUP BY id\n    UNION\n    SELECT\n        userName AS metric,\n        UNIX_TIMESTAMP(joinChannelTimeStamp) AS \"time\",\n        CASE\n            WHEN channelId IS NULL THEN 0\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            WHEN leaveChannelTimestamp IS NOT NULL THEN (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE -1\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel) OR channelId IS NULL)\n    GROUP BY id\n) AS t1\nORDER BY time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "id"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "id"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "channelId"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "discord.voiceChatLog",
+          "timeColumn": "leaveChannelTimestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "User Activity",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "hiddenSeries": false,
+      "id": 8,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "userName",
+          "rawQuery": true,
+          "rawSql": "SELECT * FROM\n(\n    SELECT\n        CONCAT(userName, \"(\", channelName, \")\") AS metric,\n        CASE\n            WHEN channelId IS     NULL AND leaveChannelTimestamp IS     NULL THEN UNIX_TIMESTAMP(now())\n            WHEN channelId IS     NULL AND leaveChannelTimestamp IS NOT NULL THEN UNIX_TIMESTAMP(leaveChannelTimestamp)\n            WHEN channelId IS NOT NULL AND leaveChannelTimestamp IS     NULL THEN UNIX_TIMESTAMP(now())\n            WHEN channelId IS NOT NULL AND leaveChannelTimestamp IS NOT NULL THEN UNIX_TIMESTAMP(leaveChannelTimestamp)\n            ELSE 0\n        END AS \"time\",\n        CASE\n            WHEN channelId IS NULL THEN 0\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            WHEN leaveChannelTimestamp IS NOT NULL THEN (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE -1\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND channelId IS NOT NULL\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n    GROUP BY id\n    UNION\n    SELECT\n        CONCAT(userName, \"(\", channelName, \")\") AS metric,\n        UNIX_TIMESTAMP(joinChannelTimeStamp) AS \"time\",\n        CASE\n            WHEN channelId IS NULL THEN 0\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            WHEN leaveChannelTimestamp IS NOT NULL THEN (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE -1\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND channelId IS NOT NULL\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n    GROUP BY id\n) AS t1\nORDER BY time ASC\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "id"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "discord.voiceChatLog",
+          "timeColumn": "leaveChannelTimestamp",
+          "where": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "User Activity By Channel",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 256
+              },
+              {
+                "color": "red",
+                "value": 512
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      },
+      "id": 15,
+      "options": {
+        "displayMode": "lcd",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.0.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "channelId"
+              ],
+              "type": "column"
+            },
+            {
+              "params": [
+                "channelName"
+              ],
+              "type": "column"
+            }
+          ],
+          "metricColumn": "channelName",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  id AS \"time\",\n  channelName AS metric,\n  count(*) AS \"joins\"\nFROM discord.voiceChatLog\nWHERE\n    (\n        (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n        OR $__timeFilter(joinChannelTimeStamp)\n        OR $__timeFilter(leaveChannelTimestamp)\n        OR\n        (\n            leaveChannelTimestamp IS NULL\n            AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n        )\n    )\n    AND (userName IN ($User) OR \"All\" IN ($User))\n    AND channelId IS NOT NULL\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nGROUP BY channelId, channelName,2\nORDER BY count(*)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "id"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "id"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "discord.voiceChatLog",
+          "timeColumn": "id",
+          "where": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Users Channel Activity",
+      "type": "bargauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 32
+              },
+              {
+                "color": "red",
+                "value": 64
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 22
+      },
+      "id": 6,
+      "options": {
+        "displayMode": "lcd",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.0.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "channelId"
+              ],
+              "type": "column"
+            },
+            {
+              "params": [
+                "channelName"
+              ],
+              "type": "column"
+            }
+          ],
+          "metricColumn": "channelName",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  id AS \"time\",\n  channelName AS metric,\n  count(*) AS \"joins\"\nFROM discord.voiceChatLog\nWHERE\n    leaveChannelTimestamp IS NULL\n    AND (userName IN ($User) OR \"All\" IN ($User))\n    AND channelId IS NOT NULL\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nGROUP BY channelId, channelName,2\nORDER BY count(*)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "id"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "id"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "discord.voiceChatLog",
+          "timeColumn": "id",
+          "where": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Channel  Users Current",
+      "type": "bargauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "super-light-green",
+                "value": null
+              },
+              {
+                "color": "light-green",
+                "value": 3600
+              },
+              {
+                "color": "semi-dark-green",
+                "value": 7200
+              },
+              {
+                "color": "dark-green",
+                "value": 14400
+              },
+              {
+                "color": "semi-dark-yellow",
+                "value": 28800
+              },
+              {
+                "color": "dark-yellow",
+                "value": 57600
+              },
+              {
+                "color": "dark-red",
+                "value": 115200
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "id": 10,
+      "options": {
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.0.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT metric, time, sum(TimeSpent)\nFROM\n(\n    SELECT\n        userName AS metric,\n        0 AS time,\n        CASE\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND channelId IS NOT NULL\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n) AS t1\nGROUP BY metric, time\nORDER BY sum(TimeSpent) ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Total Time By User",
+      "type": "bargauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 30
+      },
+      "id": 4,
+      "options": {
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.0.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, metric, sum(TimeSpent)\nFROM\n(\n    SELECT\n        UNIX_TIMESTAMP(joinChannelTimeStamp) AS \"time\",\n        channelName AS metric,\n        channelId,\n        channelName,\n        id,\n        CASE\n            WHEN leaveChannelTimestamp IS NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND channelId IS NOT NULL\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n) AS t1\nGROUP BY channelId, channelName,2\nORDER BY sum(TimeSpent)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Channels Activity Time Summary",
+      "type": "bargauge"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 25,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": "FCMySqlDB",
+        "definition": "SELECT distinct userName FROM discord.voiceChatLog",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "User",
+        "options": [],
+        "query": "SELECT distinct userName FROM discord.voiceChatLog",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": "FCMySqlDB",
+        "definition": "SELECT distinct channelName FROM discord.voiceChatLog WHERE channelId IS NOT NULL",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Channel",
+        "options": [],
+        "query": "SELECT distinct channelName FROM discord.voiceChatLog WHERE channelId IS NOT NULL",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Discord Voice Activity",
+  "uid": "ZE8P8KkGz",
+  "version": 70
+}

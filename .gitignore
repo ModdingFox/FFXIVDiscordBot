@@ -1,5 +1,5 @@
 *.swp
 siteRoot/img
 siteRoot/npm
-*.json
+discordBot/conf/*.json
 *.pyc
