@@ -15,12 +15,6 @@ def getRoleByName(guild, roleName):
     else:
         return None;
 
-def getRoleById(guild, roleId):
-    for role in guild.roles:
-        if str(role.id) == str(roleId):
-            return role;
-    return None;
-
 def getUserIdsByRoleName(guild, roleName):
     roleIds =  getRoleByName(guild, roleName);
     userIds = [];

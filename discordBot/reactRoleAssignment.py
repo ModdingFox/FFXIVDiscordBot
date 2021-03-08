@@ -1,5 +1,3 @@
-import discordUtils
-
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 from discord.utils import get
@@ -91,7 +89,7 @@ class reactRoleAssignmentClass(commands.Cog, name='React Role Assignment'):
         roleMatch = re.search("\<\@\&(\d+)\>", role);
         if roleMatch is not None:
             highestRolePosition = 0;
-            targetRole = discordUtils.getRoleById(ctx.guild, roleMatch.group(1));
+            targetRole = get(ctx.guild.roles, id=int(roleMatch.group(1)));
             if targetRole is not None:
                 for currentRole in ctx.message.author.roles:
                     if currentRole.position > highestRolePosition:
