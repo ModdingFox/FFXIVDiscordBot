@@ -1,5 +1,12 @@
 #!/bin/bash
 
+yum install -y mariadb-server.x86_64
+
+systemctl enable mariadb
+systemctl start mariadb
+
+mysql_secure_installation
+
 cat > /etc/yum.repos.d/grafana.repo <<EOF
 [grafana]
 name=grafana

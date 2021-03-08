@@ -6,12 +6,13 @@ then
     exit;
 fi
 
-yum install python3-pip.noarch python3-devel.x86_64
+yum install python3-pip.noarch python36-devel.x86_64 gcc openldap-devel.x86_64
 pip-3 install discord
 pip-3 install python-dotenv
 pip-3 install PyMySQL
 pip-3 install requests
 pip-3 install python-ldap
+pip-3 install beautifulsoup4
 
 workingDirectory=$(pwd)
 
