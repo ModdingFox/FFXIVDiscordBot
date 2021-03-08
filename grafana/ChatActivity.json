@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 3,
-  "iteration": 1615213006743,
+  "id": 2,
+  "iteration": 1615239633279,
   "links": [],
   "panels": [
     {
@@ -24,7 +24,8 @@
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null
+            "align": null,
+            "filterable": false
           },
           "mappings": [],
           "thresholds": {
@@ -53,14 +54,14 @@
       "options": {
         "showHeader": true
       },
-      "pluginVersion": "7.0.1",
+      "pluginVersion": "7.4.3",
       "targets": [
         {
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT distinct authorName, CONCAT(\"<@\", authorId, \">\") AS authorId\nFROM discord.textChatLog\nWHERE $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nORDER BY authorName ASC",
+          "rawSql": "SELECT distinct authorName, CONCAT(\"<@\", authorId, \">\") AS authorId\nFROM discord.textChatLog\nWHERE $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nORDER BY authorName ASC",
           "refId": "A",
           "select": [
             [
@@ -92,7 +93,8 @@
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null
+            "align": null,
+            "filterable": false
           },
           "mappings": [],
           "thresholds": {
@@ -121,14 +123,14 @@
       "options": {
         "showHeader": true
       },
-      "pluginVersion": "7.0.1",
+      "pluginVersion": "7.4.3",
       "targets": [
         {
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT distinct channelName, CONCAT(\"<\", channelId, \">\") AS channelId\nFROM discord.textChatLog\nWHERE $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nORDER BY channelName ASC",
+          "rawSql": "SELECT distinct channelName, CONCAT(\"<\", channelId, \">\") AS channelId\nFROM discord.textChatLog\nWHERE $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nORDER BY channelName ASC",
           "refId": "A",
           "select": [
             [
@@ -195,18 +197,20 @@
           "calcs": [
             "mean"
           ],
+          "fields": "",
           "values": false
         },
-        "showUnfilled": true
+        "showUnfilled": true,
+        "text": {}
       },
-      "pluginVersion": "7.0.1",
+      "pluginVersion": "7.4.3",
       "targets": [
         {
           "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n    channelName AS metric,\n    1 AS time,\n    count(*) AS messages\nFROM discord.textChatLog\nWHERE \n    $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nGROUP BY channelName",
+          "rawSql": "SELECT\n    channelName AS metric,\n    1 AS time,\n    count(*) AS messages\nFROM discord.textChatLog\nWHERE \n    $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nGROUP BY channelName",
           "refId": "A",
           "select": [
             [
@@ -241,7 +245,8 @@
       "datasource": null,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -270,9 +275,10 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.4.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -286,7 +292,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n    channelName AS metric,\n    CASE\n        WHEN '$Granularity' = '1m' THEN FROM_UNIXTIME(60 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/60))\n        WHEN '$Granularity' = '5m' THEN FROM_UNIXTIME(300 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/300))\n        WHEN '$Granularity' = '10m' THEN FROM_UNIXTIME(600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/600))\n        WHEN '$Granularity' = '30m' THEN FROM_UNIXTIME(1800 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/1800))\n        WHEN '$Granularity' = '1h' THEN FROM_UNIXTIME(3600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/3600))\n        WHEN '$Granularity' = '6h' THEN FROM_UNIXTIME(21600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/21600))\n        WHEN '$Granularity' = '12h' THEN FROM_UNIXTIME(43200 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/43200))\n        WHEN '$Granularity' = '1d' THEN FROM_UNIXTIME(86400 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/86400))\n        WHEN '$Granularity' = '7d' THEN FROM_UNIXTIME(604800 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/604800))\n        WHEN '$Granularity' = '14d' THEN FROM_UNIXTIME(1209600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/1209600))\n        WHEN '$Granularity' = '30d' THEN FROM_UNIXTIME(2592000 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/2592000))\n    END AS time,\n    count(*)\nFROM discord.textChatLog\nWHERE \n    $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nGROUP BY channelName, time\nORDER BY time ASC",
+          "rawSql": "SELECT\n    channelName AS metric,\n    CASE\n        WHEN '$Granularity' = '1m' THEN FROM_UNIXTIME(60 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/60))\n        WHEN '$Granularity' = '5m' THEN FROM_UNIXTIME(300 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/300))\n        WHEN '$Granularity' = '10m' THEN FROM_UNIXTIME(600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/600))\n        WHEN '$Granularity' = '30m' THEN FROM_UNIXTIME(1800 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/1800))\n        WHEN '$Granularity' = '1h' THEN FROM_UNIXTIME(3600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/3600))\n        WHEN '$Granularity' = '6h' THEN FROM_UNIXTIME(21600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/21600))\n        WHEN '$Granularity' = '12h' THEN FROM_UNIXTIME(43200 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/43200))\n        WHEN '$Granularity' = '1d' THEN FROM_UNIXTIME(86400 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/86400))\n        WHEN '$Granularity' = '7d' THEN FROM_UNIXTIME(604800 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/604800))\n        WHEN '$Granularity' = '14d' THEN FROM_UNIXTIME(1209600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/1209600))\n        WHEN '$Granularity' = '30d' THEN FROM_UNIXTIME(2592000 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/2592000))\n    END AS time,\n    count(*)\nFROM discord.textChatLog\nWHERE \n    $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nGROUP BY channelName, time\nORDER BY time ASC",
           "refId": "A",
           "select": [
             [
@@ -357,7 +363,8 @@
       "datasource": null,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -388,9 +395,10 @@
       "linewidth": 1,
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.4.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -404,7 +412,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n    CONCAT(authorName, \"(\", channelName, \")\") AS metric,\n    CASE\n        WHEN '$Granularity' = '1m' THEN FROM_UNIXTIME(60 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/60))\n        WHEN '$Granularity' = '5m' THEN FROM_UNIXTIME(300 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/300))\n        WHEN '$Granularity' = '10m' THEN FROM_UNIXTIME(600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/600))\n        WHEN '$Granularity' = '30m' THEN FROM_UNIXTIME(1800 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/1800))\n        WHEN '$Granularity' = '1h' THEN FROM_UNIXTIME(3600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/3600))\n        WHEN '$Granularity' = '6h' THEN FROM_UNIXTIME(21600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/21600))\n        WHEN '$Granularity' = '12h' THEN FROM_UNIXTIME(43200 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/43200))\n        WHEN '$Granularity' = '1d' THEN FROM_UNIXTIME(86400 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/86400))\n        WHEN '$Granularity' = '7d' THEN FROM_UNIXTIME(604800 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/604800))\n        WHEN '$Granularity' = '14d' THEN FROM_UNIXTIME(1209600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/1209600))\n        WHEN '$Granularity' = '30d' THEN FROM_UNIXTIME(2592000 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/2592000))\n    END AS time,\n    count(*)\nFROM discord.textChatLog\nWHERE \n    $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nGROUP BY authorName, channelName, time\nORDER BY time ASC",
+          "rawSql": "SELECT\n    CONCAT(authorName, \"(\", channelName, \")\") AS metric,\n    CASE\n        WHEN '$Granularity' = '1m' THEN FROM_UNIXTIME(60 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/60))\n        WHEN '$Granularity' = '5m' THEN FROM_UNIXTIME(300 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/300))\n        WHEN '$Granularity' = '10m' THEN FROM_UNIXTIME(600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/600))\n        WHEN '$Granularity' = '30m' THEN FROM_UNIXTIME(1800 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/1800))\n        WHEN '$Granularity' = '1h' THEN FROM_UNIXTIME(3600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/3600))\n        WHEN '$Granularity' = '6h' THEN FROM_UNIXTIME(21600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/21600))\n        WHEN '$Granularity' = '12h' THEN FROM_UNIXTIME(43200 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/43200))\n        WHEN '$Granularity' = '1d' THEN FROM_UNIXTIME(86400 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/86400))\n        WHEN '$Granularity' = '7d' THEN FROM_UNIXTIME(604800 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/604800))\n        WHEN '$Granularity' = '14d' THEN FROM_UNIXTIME(1209600 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/1209600))\n        WHEN '$Granularity' = '30d' THEN FROM_UNIXTIME(2592000 * FLOOR( UNIX_TIMESTAMP(messageTimestamp)/2592000))\n    END AS time,\n    count(*)\nFROM discord.textChatLog\nWHERE \n    $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nGROUP BY authorName, channelName, time\nORDER BY time ASC",
           "refId": "A",
           "select": [
             [
@@ -469,7 +477,7 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 25,
+  "schemaVersion": 27,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -477,14 +485,46 @@
       {
         "allValue": null,
         "current": {
+          "selected": false,
+          "text": "806921306976419840",
+          "value": "806921306976419840"
+        },
+        "datasource": null,
+        "definition": "SELECT distinct guildId FROM discord.textChatLog",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "guildId",
+        "options": [],
+        "query": "SELECT distinct guildId FROM discord.textChatLog",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
           "selected": true,
-          "text": "All",
+          "text": [
+            "All"
+          ],
           "value": [
             "$__all"
           ]
         },
         "datasource": "FCMySqlDB",
         "definition": "SELECT distinct authorName FROM discord.textChatLog",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -506,13 +546,17 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "All",
+          "text": [
+            "All"
+          ],
           "value": [
             "$__all"
           ]
         },
         "datasource": "FCMySqlDB",
         "definition": "SELECT distinct channelName FROM discord.textChatLog",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -539,6 +583,8 @@
           "text": "1m",
           "value": "1m"
         },
+        "description": null,
+        "error": null,
         "hide": 0,
         "label": null,
         "name": "Granularity",
@@ -627,5 +673,5 @@
   "timezone": "",
   "title": "Discord Chat Activity",
   "uid": "9xdIPBzMz",
-  "version": 33
+  "version": 5
 }

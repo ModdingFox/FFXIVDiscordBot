@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1615213080390,
+  "id": 5,
+  "iteration": 1615239717495,
   "links": [],
   "panels": [
     {
@@ -25,7 +25,8 @@
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": "left"
+            "align": "left",
+            "filterable": false
           },
           "mappings": [],
           "thresholds": {
@@ -57,14 +58,14 @@
           }
         ]
       },
-      "pluginVersion": "7.0.1",
+      "pluginVersion": "7.4.3",
       "targets": [
         {
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT distinct userName, CONCAT(\"<@\", discordUserId, \">\") AS discordUserId\nFROM discord.voiceChatLog\nWHERE\n(\n    (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n    OR $__timeFilter(joinChannelTimeStamp)\n    OR $__timeFilter(leaveChannelTimestamp)\n    OR\n    (\n        leaveChannelTimestamp IS NULL\n        AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n    )\n)\nAND (userName IN ($User) OR \"All\" IN ($User))\nAND (channelName IN ($Channel) OR \"All\" IN ($Channel))",
+          "rawSql": "SELECT distinct userName, CONCAT(\"<@\", discordUserId, \">\") AS discordUserId\nFROM discord.voiceChatLog\nWHERE\n(\n    (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n    OR $__timeFilter(joinChannelTimeStamp)\n    OR $__timeFilter(leaveChannelTimestamp)\n    OR\n    (\n        leaveChannelTimestamp IS NULL\n        AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n    )\n)\nAND (userName IN ($User) OR \"All\" IN ($User))\nAND (guildId IN ($guildId) OR \"All\" IN ($guildId))\nAND (channelName IN ($Channel) OR \"All\" IN ($Channel))",
           "refId": "A",
           "select": [
             [
@@ -96,7 +97,8 @@
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": "left"
+            "align": "left",
+            "filterable": false
           },
           "mappings": [],
           "thresholds": {
@@ -125,14 +127,14 @@
       "options": {
         "showHeader": true
       },
-      "pluginVersion": "7.0.1",
+      "pluginVersion": "7.4.3",
       "targets": [
         {
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT distinct channelName, CONCAT(\"<\", channelId, \">\") AS channelId\nFROM discord.voiceChatLog\nWHERE\n(\n    (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n    OR $__timeFilter(joinChannelTimeStamp)\n    OR $__timeFilter(leaveChannelTimestamp)\n    OR\n    (\n        leaveChannelTimestamp IS NULL\n        AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n    )\n)\nAND (userName IN ($User) OR \"All\" IN ($User))\nAND (channelName IN ($Channel) OR \"All\" IN ($Channel))",
+          "rawSql": "SELECT distinct channelName, CONCAT(\"<\", channelId, \">\") AS channelId\nFROM discord.voiceChatLog\nWHERE\n(\n    (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n    OR $__timeFilter(joinChannelTimeStamp)\n    OR $__timeFilter(leaveChannelTimestamp)\n    OR\n    (\n        leaveChannelTimestamp IS NULL\n        AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n    )\n)\nAND (userName IN ($User) OR \"All\" IN ($User))\nAND (guildId IN ($guildId) OR \"All\" IN ($guildId))\nAND (channelName IN ($Channel) OR \"All\" IN ($Channel))",
           "refId": "A",
           "select": [
             [
@@ -167,7 +169,8 @@
       "datasource": "FCMySqlDB",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -196,9 +199,10 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.4.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -219,7 +223,7 @@
           ],
           "metricColumn": "userName",
           "rawQuery": true,
-          "rawSql": "SELECT * FROM\n(\n    SELECT\n        userName AS metric,\n        CASE\n            WHEN channelId IS     NULL AND leaveChannelTimestamp IS     NULL THEN UNIX_TIMESTAMP(now())\n            WHEN channelId IS     NULL AND leaveChannelTimestamp IS NOT NULL THEN UNIX_TIMESTAMP(leaveChannelTimestamp)\n            WHEN channelId IS NOT NULL AND leaveChannelTimestamp IS     NULL THEN UNIX_TIMESTAMP(now())\n            WHEN channelId IS NOT NULL AND leaveChannelTimestamp IS NOT NULL THEN UNIX_TIMESTAMP(leaveChannelTimestamp)\n            ELSE 0\n        END AS \"time\",\n        CASE\n            WHEN channelId IS NULL THEN 0\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            WHEN leaveChannelTimestamp IS NOT NULL THEN (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE -1\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel) OR channelId IS NULL)\n    GROUP BY id\n    UNION\n    SELECT\n        userName AS metric,\n        UNIX_TIMESTAMP(joinChannelTimeStamp) AS \"time\",\n        CASE\n            WHEN channelId IS NULL THEN 0\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            WHEN leaveChannelTimestamp IS NOT NULL THEN (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE -1\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel) OR channelId IS NULL)\n    GROUP BY id\n) AS t1\nORDER BY time ASC",
+          "rawSql": "SELECT * FROM\n(\n    SELECT\n        userName AS metric,\n        CASE\n            WHEN channelId IS     NULL AND leaveChannelTimestamp IS     NULL THEN UNIX_TIMESTAMP(now())\n            WHEN channelId IS     NULL AND leaveChannelTimestamp IS NOT NULL THEN UNIX_TIMESTAMP(leaveChannelTimestamp)\n            WHEN channelId IS NOT NULL AND leaveChannelTimestamp IS     NULL THEN UNIX_TIMESTAMP(now())\n            WHEN channelId IS NOT NULL AND leaveChannelTimestamp IS NOT NULL THEN UNIX_TIMESTAMP(leaveChannelTimestamp)\n            ELSE 0\n        END AS \"time\",\n        CASE\n            WHEN channelId IS NULL THEN 0\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            WHEN leaveChannelTimestamp IS NOT NULL THEN (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE -1\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel) OR channelId IS NULL)\n    GROUP BY id\n    UNION\n    SELECT\n        userName AS metric,\n        UNIX_TIMESTAMP(joinChannelTimeStamp) AS \"time\",\n        CASE\n            WHEN channelId IS NULL THEN 0\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            WHEN leaveChannelTimestamp IS NOT NULL THEN (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE -1\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel) OR channelId IS NULL)\n    GROUP BY id\n) AS t1\nORDER BY time ASC",
           "refId": "A",
           "select": [
             [
@@ -311,7 +315,8 @@
       "datasource": null,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -340,9 +345,10 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.4.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -356,7 +362,7 @@
           "group": [],
           "metricColumn": "userName",
           "rawQuery": true,
-          "rawSql": "SELECT * FROM\n(\n    SELECT\n        CONCAT(userName, \"(\", channelName, \")\") AS metric,\n        CASE\n            WHEN channelId IS     NULL AND leaveChannelTimestamp IS     NULL THEN UNIX_TIMESTAMP(now())\n            WHEN channelId IS     NULL AND leaveChannelTimestamp IS NOT NULL THEN UNIX_TIMESTAMP(leaveChannelTimestamp)\n            WHEN channelId IS NOT NULL AND leaveChannelTimestamp IS     NULL THEN UNIX_TIMESTAMP(now())\n            WHEN channelId IS NOT NULL AND leaveChannelTimestamp IS NOT NULL THEN UNIX_TIMESTAMP(leaveChannelTimestamp)\n            ELSE 0\n        END AS \"time\",\n        CASE\n            WHEN channelId IS NULL THEN 0\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            WHEN leaveChannelTimestamp IS NOT NULL THEN (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE -1\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND channelId IS NOT NULL\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n    GROUP BY id\n    UNION\n    SELECT\n        CONCAT(userName, \"(\", channelName, \")\") AS metric,\n        UNIX_TIMESTAMP(joinChannelTimeStamp) AS \"time\",\n        CASE\n            WHEN channelId IS NULL THEN 0\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            WHEN leaveChannelTimestamp IS NOT NULL THEN (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE -1\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND channelId IS NOT NULL\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n    GROUP BY id\n) AS t1\nORDER BY time ASC\n",
+          "rawSql": "SELECT * FROM\n(\n    SELECT\n        CONCAT(userName, \"(\", channelName, \")\") AS metric,\n        CASE\n            WHEN channelId IS     NULL AND leaveChannelTimestamp IS     NULL THEN UNIX_TIMESTAMP(now())\n            WHEN channelId IS     NULL AND leaveChannelTimestamp IS NOT NULL THEN UNIX_TIMESTAMP(leaveChannelTimestamp)\n            WHEN channelId IS NOT NULL AND leaveChannelTimestamp IS     NULL THEN UNIX_TIMESTAMP(now())\n            WHEN channelId IS NOT NULL AND leaveChannelTimestamp IS NOT NULL THEN UNIX_TIMESTAMP(leaveChannelTimestamp)\n            ELSE 0\n        END AS \"time\",\n        CASE\n            WHEN channelId IS NULL THEN 0\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            WHEN leaveChannelTimestamp IS NOT NULL THEN (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE -1\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n        AND channelId IS NOT NULL\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n    GROUP BY id\n    UNION\n    SELECT\n        CONCAT(userName, \"(\", channelName, \")\") AS metric,\n        UNIX_TIMESTAMP(joinChannelTimeStamp) AS \"time\",\n        CASE\n            WHEN channelId IS NULL THEN 0\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            WHEN leaveChannelTimestamp IS NOT NULL THEN (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE -1\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n        AND channelId IS NOT NULL\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n    GROUP BY id\n) AS t1\nORDER BY time ASC\n",
           "refId": "A",
           "select": [
             [
@@ -454,11 +460,13 @@
           "calcs": [
             "mean"
           ],
+          "fields": "",
           "values": false
         },
-        "showUnfilled": true
+        "showUnfilled": true,
+        "text": {}
       },
-      "pluginVersion": "7.0.1",
+      "pluginVersion": "7.4.3",
       "targets": [
         {
           "format": "time_series",
@@ -478,7 +486,7 @@
           ],
           "metricColumn": "channelName",
           "rawQuery": true,
-          "rawSql": "SELECT\n  id AS \"time\",\n  channelName AS metric,\n  count(*) AS \"joins\"\nFROM discord.voiceChatLog\nWHERE\n    (\n        (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n        OR $__timeFilter(joinChannelTimeStamp)\n        OR $__timeFilter(leaveChannelTimestamp)\n        OR\n        (\n            leaveChannelTimestamp IS NULL\n            AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n        )\n    )\n    AND (userName IN ($User) OR \"All\" IN ($User))\n    AND channelId IS NOT NULL\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nGROUP BY channelId, channelName,2\nORDER BY count(*)",
+          "rawSql": "SELECT\n  id AS \"time\",\n  channelName AS metric,\n  count(*) AS \"joins\"\nFROM discord.voiceChatLog\nWHERE\n    (\n        (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n        OR $__timeFilter(joinChannelTimeStamp)\n        OR $__timeFilter(leaveChannelTimestamp)\n        OR\n        (\n            leaveChannelTimestamp IS NULL\n            AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n        )\n    )\n    AND (userName IN ($User) OR \"All\" IN ($User))\n    AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n    AND channelId IS NOT NULL\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nGROUP BY channelId, channelName,2\nORDER BY count(*)",
           "refId": "A",
           "select": [
             [
@@ -552,11 +560,13 @@
           "calcs": [
             "mean"
           ],
+          "fields": "",
           "values": false
         },
-        "showUnfilled": true
+        "showUnfilled": true,
+        "text": {}
       },
-      "pluginVersion": "7.0.1",
+      "pluginVersion": "7.4.3",
       "targets": [
         {
           "format": "time_series",
@@ -576,7 +586,7 @@
           ],
           "metricColumn": "channelName",
           "rawQuery": true,
-          "rawSql": "SELECT\n  id AS \"time\",\n  channelName AS metric,\n  count(*) AS \"joins\"\nFROM discord.voiceChatLog\nWHERE\n    leaveChannelTimestamp IS NULL\n    AND (userName IN ($User) OR \"All\" IN ($User))\n    AND channelId IS NOT NULL\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nGROUP BY channelId, channelName,2\nORDER BY count(*)",
+          "rawSql": "SELECT\n  id AS \"time\",\n  channelName AS metric,\n  count(*) AS \"joins\"\nFROM discord.voiceChatLog\nWHERE\n    leaveChannelTimestamp IS NULL\n    AND (userName IN ($User) OR \"All\" IN ($User))\n    AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n    AND channelId IS NOT NULL\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nGROUP BY channelId, channelName,2\nORDER BY count(*)",
           "refId": "A",
           "select": [
             [
@@ -667,18 +677,20 @@
           "calcs": [
             "mean"
           ],
+          "fields": "",
           "values": false
         },
-        "showUnfilled": true
+        "showUnfilled": true,
+        "text": {}
       },
-      "pluginVersion": "7.0.1",
+      "pluginVersion": "7.4.3",
       "targets": [
         {
           "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT metric, time, sum(TimeSpent)\nFROM\n(\n    SELECT\n        userName AS metric,\n        0 AS time,\n        CASE\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND channelId IS NOT NULL\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n) AS t1\nGROUP BY metric, time\nORDER BY sum(TimeSpent) ASC",
+          "rawSql": "SELECT metric, time, sum(TimeSpent)\nFROM\n(\n    SELECT\n        userName AS metric,\n        0 AS time,\n        CASE\n            WHEN leaveChannelTimestamp IS     NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n        AND channelId IS NOT NULL\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n) AS t1\nGROUP BY metric, time\nORDER BY sum(TimeSpent) ASC",
           "refId": "A",
           "select": [
             [
@@ -738,18 +750,20 @@
           "calcs": [
             "mean"
           ],
+          "fields": "",
           "values": false
         },
-        "showUnfilled": true
+        "showUnfilled": true,
+        "text": {}
       },
-      "pluginVersion": "7.0.1",
+      "pluginVersion": "7.4.3",
       "targets": [
         {
           "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, metric, sum(TimeSpent)\nFROM\n(\n    SELECT\n        UNIX_TIMESTAMP(joinChannelTimeStamp) AS \"time\",\n        channelName AS metric,\n        channelId,\n        channelName,\n        id,\n        CASE\n            WHEN leaveChannelTimestamp IS NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND channelId IS NOT NULL\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n) AS t1\nGROUP BY channelId, channelName,2\nORDER BY sum(TimeSpent)",
+          "rawSql": "SELECT time, metric, sum(TimeSpent)\nFROM\n(\n    SELECT\n        UNIX_TIMESTAMP(joinChannelTimeStamp) AS \"time\",\n        channelName AS metric,\n        channelId,\n        channelName,\n        id,\n        CASE\n            WHEN leaveChannelTimestamp IS NULL THEN (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n            ELSE (UNIX_TIMESTAMP(leaveChannelTimestamp) - UNIX_TIMESTAMP(joinChannelTimeStamp))\n        END AS \"TimeSpent\"\n    FROM discord.voiceChatLog\n    WHERE\n        (\n            (UNIX_TIMESTAMP(joinChannelTimeStamp) < $__unixEpochFrom() AND (UNIX_TIMESTAMP(leaveChannelTimestamp) > $__unixEpochTo() OR leaveChannelTimestamp IS NULL))\n            OR $__timeFilter(joinChannelTimeStamp)\n            OR $__timeFilter(leaveChannelTimestamp)\n            OR\n            (\n                leaveChannelTimestamp IS NULL\n                AND (UNIX_TIMESTAMP(now()) - $__unixEpochTo()) <= 5\n            )\n        )\n        AND (userName IN ($User) OR \"All\" IN ($User))\n        AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n        AND channelId IS NOT NULL\n        AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n) AS t1\nGROUP BY channelId, channelName,2\nORDER BY sum(TimeSpent)",
           "refId": "A",
           "select": [
             [
@@ -778,7 +792,7 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 25,
+  "schemaVersion": 27,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -786,14 +800,46 @@
       {
         "allValue": null,
         "current": {
+          "selected": false,
+          "text": "806921306976419840",
+          "value": "806921306976419840"
+        },
+        "datasource": null,
+        "definition": "SELECT distinct guildId FROM discord.textChatLog",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "guildId",
+        "options": [],
+        "query": "SELECT distinct guildId FROM discord.textChatLog",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
           "selected": true,
-          "text": "All",
+          "text": [
+            "All"
+          ],
           "value": [
             "$__all"
           ]
         },
         "datasource": "FCMySqlDB",
         "definition": "SELECT distinct userName FROM discord.voiceChatLog",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -815,13 +861,17 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "All",
+          "text": [
+            "All"
+          ],
           "value": [
             "$__all"
           ]
         },
         "datasource": "FCMySqlDB",
         "definition": "SELECT distinct channelName FROM discord.voiceChatLog WHERE channelId IS NOT NULL",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -842,7 +892,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -861,5 +911,5 @@
   "timezone": "browser",
   "title": "Discord Voice Activity",
   "uid": "ZE8P8KkGz",
-  "version": 70
+  "version": 8
 }

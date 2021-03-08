@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 4,
-  "iteration": 1615212970026,
+  "id": 3,
+  "iteration": 1615239681815,
   "links": [],
   "panels": [
     {
@@ -24,7 +24,8 @@
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null
+            "align": null,
+            "filterable": false
           },
           "mappings": [],
           "thresholds": {
@@ -72,14 +73,14 @@
           }
         ]
       },
-      "pluginVersion": "7.0.1",
+      "pluginVersion": "7.4.3",
       "targets": [
         {
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT messageTimestamp, authorName, channelName, channelId, messageContent, attachmentUrls\nFROM discord.textChatLog\nWHERE $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nORDER BY messageTimestamp ASC",
+          "rawSql": "SELECT messageTimestamp, authorName, channelName, channelId, messageContent, attachmentUrls\nFROM discord.textChatLog\nWHERE $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nORDER BY messageTimestamp ASC",
           "refId": "A",
           "select": [
             [
@@ -107,7 +108,7 @@
       "type": "table"
     }
   ],
-  "schemaVersion": 25,
+  "schemaVersion": 27,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -115,14 +116,46 @@
       {
         "allValue": null,
         "current": {
+          "selected": false,
+          "text": "806921306976419840",
+          "value": "806921306976419840"
+        },
+        "datasource": null,
+        "definition": "SELECT distinct guildId FROM discord.textChatLog",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "guildId",
+        "options": [],
+        "query": "SELECT distinct guildId FROM discord.textChatLog",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
           "selected": true,
-          "text": "All",
+          "text": [
+            "All"
+          ],
           "value": [
             "$__all"
           ]
         },
         "datasource": "FCMySqlDB",
         "definition": "SELECT distinct authorName FROM discord.textChatLog",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -144,13 +177,17 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "All",
+          "text": [
+            "All"
+          ],
           "value": [
             "$__all"
           ]
         },
         "datasource": "FCMySqlDB",
         "definition": "SELECT distinct channelName FROM discord.textChatLog",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -187,8 +224,8 @@
       "1d"
     ]
   },
-  "timezone": "",
+  "timezone": "utc",
   "title": "Chat Logs",
   "uid": "Hjpe7rLMz",
-  "version": 11
+  "version": 8
 }
