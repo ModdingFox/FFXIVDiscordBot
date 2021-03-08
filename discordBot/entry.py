@@ -7,7 +7,7 @@ from settings import discordSettings, mySqlSettings, ldapSettings
 import botManagement
 import clubMenu
 import extraStuff
-import lodestone;
+import lodestone
 import privateCategories
 import reactRoleAssignment
 import textLogging
