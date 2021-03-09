@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
-  "iteration": 1615239681815,
+  "iteration": 1615307827203,
   "links": [],
   "panels": [
     {
@@ -80,7 +80,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT messageTimestamp, authorName, channelName, channelId, messageContent, attachmentUrls\nFROM discord.textChatLog\nWHERE $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\nORDER BY messageTimestamp ASC",
+          "rawSql": "SELECT messageTimestamp, authorName, channelName, channelId, messageContent, attachmentUrls, CASE WHEN isEdit is true THEN \"Edit\" ELSE \"Original\" END\nFROM discord.textChatLog\nWHERE $__timeFilter(messageTimestamp)\n    AND (authorName IN ($User) OR \"All\" IN ($User))\n    AND (guildId IN ($guildId) OR \"All\" IN ($guildId))\n    AND (channelName IN ($Channel) OR \"All\" IN ($Channel))\n    AND (isEdit IN ($isEdit) OR \"All\" IN ($isEdit))\nORDER BY messageTimestamp ASC",
           "refId": "A",
           "select": [
             [
@@ -204,6 +204,42 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "Original",
+          "value": "0"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": false,
+        "name": "isEdit",
+        "options": [
+          {
+            "selected": false,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "Original",
+            "value": "0"
+          },
+          {
+            "selected": true,
+            "text": "Edit",
+            "value": "1"
+          }
+        ],
+        "query": "Original : 0,Edit : 1",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
       }
     ]
   },
@@ -227,5 +263,5 @@
   "timezone": "utc",
   "title": "Chat Logs",
   "uid": "Hjpe7rLMz",
-  "version": 8
+  "version": 10
 }

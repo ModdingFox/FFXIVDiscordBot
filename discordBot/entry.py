@@ -4,6 +4,7 @@ from settings import discordSettings, mySqlSettings, ldapSettings
 
 import botManagement
 import clubMenu
+import courtesan
 import extraStuff
 import lodestone
 import permissions
@@ -28,6 +29,7 @@ client = commands.Bot(command_prefix=settingsDiscord.commandPrefix, intents=inte
 
 #Load Cogs
 client.add_cog(botManagement.botManagementClass(client));
+client.add_cog(courtesan.courtesanClass(client, settingsMySql));
 client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));
 client.add_cog(extraStuff.extraStuffClass(client));
 client.add_cog(lodestone.lodestoneClass(client));
@@ -42,4 +44,4 @@ client.add_cog(voiceLogging.voiceLoggingClass(client, settingsMySql));
 async def on_ready():
     print(f'{client.user} has connected to Discord!');
 
-client.run(settingsDiscord.token)
+client.run(settingsDiscord.token);
