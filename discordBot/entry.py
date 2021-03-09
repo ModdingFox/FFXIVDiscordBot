@@ -26,10 +26,6 @@ intents.members = True;
 
 client = commands.Bot(command_prefix=settingsDiscord.commandPrefix, intents=intents);
 
-#Load Logging Modules
-#moduleTextLogging = loggingModule.textLoggingClass(client, settingsMySql);
-#moduleVoiceLogging = loggingModule.voiceLoggingClass(client, settingsMySql);
-
 #Load Cogs
 client.add_cog(botManagement.botManagementClass(client));
 client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));

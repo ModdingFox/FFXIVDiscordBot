@@ -7,7 +7,7 @@ class extraStuffClass(commands.Cog, name='Random Junk'):
     def __init__(self, discordClient):
         self.discordClient = discordClient;
         
-    @commands.command(brief="Solt Machine", description="Solt Machine")
+    @commands.command(brief="Slot Machine", description="Slot Machine")
     async def slotMachine(self, ctx, betAmmount):
         items = [":poop:", ":cherries:", ":cupcake:", ":pizza:", ":cookie:", ":fox:"];
         

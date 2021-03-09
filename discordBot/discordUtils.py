@@ -55,3 +55,9 @@ async def fetchChannelById(guild, channelId):
             targetChannel = currentChannel;
             break;
     return targetChannel;
+
+def getUserRoleIds(ctx):
+    roleIds = [];
+    for role in ctx.message.author.roles:
+        roleIds.append(role.id);
+    return roleIds;

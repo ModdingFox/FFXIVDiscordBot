@@ -1,5 +1,3 @@
-import discordPermissions
-
 from discord.ext import commands
 
 class botManagementClass(commands.Cog, name='Bot Management'):

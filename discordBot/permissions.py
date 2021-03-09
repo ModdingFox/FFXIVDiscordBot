@@ -1,4 +1,4 @@
-import discordPermissions
+import discordUtils
 
 from discord.ext import commands
 from discord.utils import get
@@ -40,6 +40,23 @@ class PermissionsClass(commands.Cog, name='Permissions Management'):
         
         return result;
     
+    def sqlGetPermissions(self, guildId, commandName):
+        result = [];
+        
+        connection = pymysql.connect(host = self.settingsMySql.host, user = self.settingsMySql.user, password = self.settingsMySql.password, cursorclass=pymysql.cursors.DictCursor);
+        
+        try:
+            with connection.cursor() as cursor:
+                sql = "SELECT roleId FROM discord.commandPermissions WHERE guildId = %s AND commandName = %s";
+                cursor.execute(sql, (guildId, commandName));
+                results = cursor.fetchall();
+                for queryResult in results:
+                    result.append(int(queryResult["roleId"]));
+        finally:
+            connection.close();
+        
+        return result;
+    
     def initTables(self):
         result = False;
         
@@ -65,9 +82,23 @@ class PermissionsClass(commands.Cog, name='Permissions Management'):
         self.discordClient = discordClient;
         self.settingsMySql = settingsMySql;
         self.initTables();
+        
+        @discordClient.check
+        async def globalPermissionsCheck(ctx):
+            if ctx.command.name == "help":
+                return True;
+            elif ctx.message.author.guild_permissions.administrator:
+                return True;
+            else:
+                discordUserRoles = set(discordUtils.getUserRoleIds(ctx));
+                commandPermissions = set(self.sqlGetPermissions(ctx.guild.id, ctx.command.name));
+                rolesWithPermission = len(discordUserRoles & commandPermissions);
+                if rolesWithPermission > 0:
+                    return True;
+                else:
+                    return False;
     
     @commands.command(brief="Allows a role access to a command", description="Allows a role access to a command")
-    @commands.check(discordPermissions.checkPermissions)
     async def premissionsAdd(self, ctx, role, command):
         if command in self.getCommandNames():
             roleMatch = re.search("\<\@\&(\d+)\>", role);
@@ -86,7 +117,6 @@ class PermissionsClass(commands.Cog, name='Permissions Management'):
             await ctx.send("Command {0} not found".format(command));
     
     @commands.command(brief="Disallows a role access to a command", description="Disallows a role access to a command")
-    @commands.check(discordPermissions.checkPermissions)
     async def premissionsRemove(self, ctx, role, command):
         if command in self.getCommandNames():
             roleMatch = re.search("\<\@\&(\d+)\>", role);
