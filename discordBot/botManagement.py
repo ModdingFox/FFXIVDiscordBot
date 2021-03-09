@@ -1,9 +1,11 @@
+import discordPermissions
+
 from discord.ext import commands
 
 class botManagementClass(commands.Cog, name='Bot Management'):
     def __init__(self, discordClient):
         self.discordClient = discordClient;
-        
+    
     @commands.command(brief="Echos messages to the server console", description="Echos messages to the server console")
     async def serverEcho(self, ctx, arg):
         print("Server Echo message:\n{0}\n{1}".format(ctx, arg));

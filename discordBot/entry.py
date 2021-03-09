@@ -2,12 +2,11 @@
 
 from settings import discordSettings, mySqlSettings, ldapSettings
 
-#import loggingModule
-
 import botManagement
 import clubMenu
 import extraStuff
 import lodestone
+import permissions
 import privateCategories
 import reactRoleAssignment
 import textLogging
@@ -36,6 +35,7 @@ client.add_cog(botManagement.botManagementClass(client));
 client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));
 client.add_cog(extraStuff.extraStuffClass(client));
 client.add_cog(lodestone.lodestoneClass(client));
+client.add_cog(permissions.PermissionsClass(client, settingsMySql));
 client.add_cog(privateCategories.privateCategoriesClass(client, settingsMySql));
 client.add_cog(reactRoleAssignment.reactRoleAssignmentClass(client, settingsMySql));
 client.add_cog(textLogging.textLoggingClass(client, settingsMySql));
