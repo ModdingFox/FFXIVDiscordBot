@@ -3,3 +3,4 @@ $.urlParam = function(name){
         if(results == null) { return 'undefined'; }
 	else { return results[1] || 0; }
 }
+

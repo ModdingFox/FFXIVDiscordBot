@@ -1,0 +1,22 @@
+html, body {
+    margin: 0;
+    height: 100%;
+    background: linear-gradient(107deg, #963933 25%, #9932B3 75%);
+}
+
+h1, h2 {
+    font-family: 'Fredoka One', cursive;
+    background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display:inline-block;
+}
+
+p, h3, h4, h5 {
+    text-align: center;
+    color: #3687B5;
+    font-family: 'Fredoka One', cursive;
+    font-weight: 400;
+    text-shadow: 0.0133rem 0.0133rem 0.0125rem #60BFB9;
+}
+

@@ -3,3 +3,4 @@ siteRoot/img
 siteRoot/npm
 discordBot/conf/*.json
 *.pyc
+npm
