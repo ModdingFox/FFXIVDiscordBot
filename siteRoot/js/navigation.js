@@ -4,7 +4,7 @@ function doNavigation() {
 
     if(window.location.hash) {
         if(window.location.hash == "#discord") {
-            window.location = "https://discord.com/invite/MKyMMZHw";
+            window.location = "https://discord.com/invite/M4u5PhZeQp";
         } else {
             button = $(window.location.hash + "Button");
             cardBody = $(window.location.hash + "CardBody");
