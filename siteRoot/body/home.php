@@ -24,10 +24,18 @@
                 <div><h1 class="card-title">Club Spectrum</h1></div>
                 <div><h2 class="card-text">Show us your true colors!</h2></div>
                 <div id="carouselDiv" class="carousel slide" data-ride="carousel">
-                    <ol class="carousel-indicators">
-                        <li data-target="#carouselDiv" data-slide-to="0" class="active"></li>
-                        <li data-target="#carouselDiv" data-slide-to="1"></li>
-                        <li data-target="#carouselDiv" data-slide-to="2"></li>
+		    <ol class="carousel-indicators">
+                        <?php
+                            $files = preg_grep('/^([^.])/', scandir($_SERVER['DOCUMENT_ROOT'] . "/img/home"));
+                            $filesCount = count($files);
+                            for ($x = 0; $x <= $filesCount; $x++) {
+                            if ($x == 0) {
+                                    echo '                        <li data-target="#carouselDiv" data-slide-to="0" class="active"></li>';
+                                } else {
+                                    echo '<li data-target="#carouselDiv" data-slide-to="' . $x . '"></li>';
+                                }
+			    }
+			?>
                     </ol>
 		    <div class="carousel-inner">
                         <?php
