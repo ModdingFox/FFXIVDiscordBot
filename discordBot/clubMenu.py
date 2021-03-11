@@ -46,7 +46,7 @@ class clubMenuClass(commands.Cog, name='Club Menu'):
     	
         try:
             with connection.cursor() as cursor:
-                sql = "SELECT menuItem, itemCost FROM discord.menuItems WHERE guildId = %s AND menuType = %s";
+                sql = "SELECT menuItem, itemCost FROM discord.menuItems WHERE guildId = %s AND menuType = %s ORDER BY menuItem ASC";
                 cursor.execute(sql, (guildId, menuType));
                 results = cursor.fetchall();
                 for queryResult in results:
@@ -221,7 +221,7 @@ class clubMenuClass(commands.Cog, name='Club Menu'):
         message = "~(DRINKS)~\n";
         for item in self.getMenuItems(ctx.guild.id, "drinkMenu"):
             message += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
-        message += "~(DRINK SPECIALS)~\n";
+        message += "\n~(DRINK SPECIALS)~\n";
         for item in self.getMenuItems(ctx.guild.id, "drinkSpecialMenu"):
             message += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
         await ctx.send(message);

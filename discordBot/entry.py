@@ -7,6 +7,7 @@ import clubMenu
 import courtesan
 import extraStuff
 import lodestone
+import normalizeMessages
 import permissions
 import privateCategories
 import reactRoleAssignment
@@ -33,6 +34,7 @@ client.add_cog(courtesan.courtesanClass(client, settingsMySql));
 client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));
 client.add_cog(extraStuff.extraStuffClass(client));
 client.add_cog(lodestone.lodestoneClass(client));
+client.add_cog(normalizeMessages.normalizeMessagesClass(client));
 client.add_cog(permissions.PermissionsClass(client, settingsMySql));
 client.add_cog(privateCategories.privateCategoriesClass(client, settingsMySql));
 client.add_cog(reactRoleAssignment.reactRoleAssignmentClass(client, settingsMySql));

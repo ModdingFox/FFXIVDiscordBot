@@ -29,16 +29,21 @@
                         <li data-target="#carouselDiv" data-slide-to="1"></li>
                         <li data-target="#carouselDiv" data-slide-to="2"></li>
                     </ol>
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                           <img class="d-block w-100" src="/img/image01.jpg" alt="">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block w-100" src="/img/image02.jpg" alt="">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block w-100" src="/img/image03.jpg" alt="">
-                        </div>
+		    <div class="carousel-inner">
+                        <?php
+                            $files = preg_grep('/^([^.])/', scandir($_SERVER['DOCUMENT_ROOT'] . "/img/home"));
+                            $isFirst = True;
+			    foreach ($files as &$file) {
+				if ($isFirst == True) {
+				    echo '                        <div class="carousel-item active">';
+				    $isFirst = False;
+				} else {
+                                    echo '                        <div class="carousel-item">';
+				}
+                                echo '                            <img class="d-block w-100" src="/img/home/' . $file . '" alt="">';
+                                echo '                        </div>';
+                            }
+                        ?>
                     </div>
                     <a class="carousel-control-prev" href="#carouselDiv" role="button" data-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>

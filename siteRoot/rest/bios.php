@@ -5,7 +5,7 @@
     {
         $json_result = json_decode('{}');
         #Ignored user has special chars
-        $select_sql = 'SELECT distinct bM.discordUserId, bM.channelId, b.bioName, b.bioText, b.bioImage FROM discord.bios b JOIN discord.biosMessages bM ON b.guildId = bM.guildId AND b.discordUserId = bM.discordUserId WHERE b.guildId = ? AND b.discordUserId != "184208290685648897" ORDER BY b.bioName ASC';
+        $select_sql = 'SELECT distinct bM.discordUserId, bM.channelId, b.bioName, b.bioText, b.bioImage FROM discord.bios b JOIN discord.biosMessages bM ON b.guildId = bM.guildId AND b.discordUserId = bM.discordUserId WHERE b.guildId = ? ORDER BY b.bioName ASC';
         $select_stmt = $conn->prepare($select_sql);
         $select_stmt->bind_param("s", $guildId);
         
