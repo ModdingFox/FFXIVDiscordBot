@@ -3,7 +3,7 @@ function doNavigation() {
     $("div[id$='CardBody']").each(function addClass(element){ $(this).addClass("d-none") });
 
     if(window.location.hash) {
-        if(window.location.hash == "#discord") {
+        if(window.location.hash.toLowerCase() == "#discord") {
             window.location = "https://discord.com/invite/M4u5PhZeQp";
         } else {
             button = $(window.location.hash + "Button");
