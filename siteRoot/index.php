@@ -15,15 +15,20 @@
         <link href="/css/global.css" rel="stylesheet">
     </head>
     <body class="bg-dark text-light">
-        <?php
-            $Target_Page="body/home.php";
-            
-            switch($_GET["Page_Name"]) {
-                default:
-                    break;
-            }
-            
-            if($Target_Page != "") { require($Target_Page); }
-        ?>
+        <div class="container h-100">
+            <div class="row h-100 justify-content-center align-items-center">
+                <div class="card container text-center bg-dark text-light">
+                    <?php
+                        require("navigation/cardNavigation.php");
+                        require("cards/application.php");
+                        require("cards/bios.php");
+                        require("cards/contact.php");
+                        require("cards/home.php");
+                        require("cards/menu.php");
+                        require("cards/venu.php");
+                    ?>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
