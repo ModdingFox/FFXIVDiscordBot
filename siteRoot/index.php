@@ -4,7 +4,9 @@
 	<meta charset="utf-8">
 	<script src="/npm/node_modules/jquery/dist/jquery.min.js"></script>
 	<script src="/npm/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-        <link href="/npm/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/npm/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="/npm/node_modules/parsleyjs/dist/parsley.min.js"></script>
+        <script src="/js/application.js"></script>
 	<script src="/js/urlParam.js"></script>
         
 	<script src="/js/navigation.js"></script>

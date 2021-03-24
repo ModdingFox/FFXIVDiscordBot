@@ -16,6 +16,9 @@
                         <a class="nav-link mr-4" id="venuButton" href="#venu">Venu</a>
 		    </li>
                     <li class="nav-item">
+                        <a class="nav-link mr-4" id="applicationButton" href="#application">Hiring Application</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link mr-4" id="contactButton" href="#contact">Contact</a>
                     </li>
                 </ul>
@@ -112,19 +115,20 @@
                 <div><h1 class="card-title">Club Spectrum Application</h1></div>
 		<div><h2 class="card-text">Show us your true colors!</h2></div>
 		<div><p>Thank you for your interest in Club Spectrum! This application is to assist us in sifting through all interested parties to find those most suitable to fit our venue. To ensure a speedy reply, check that every necessary and applicable field is filled out to the best of your ability. We look forward to receiving your application.</p></div>
-                <form action="/post/application.php" method="post">
-                    <label for="question1">What drew you to apply at Club Spectrum? *</label><br>
-                    <textarea type="text" id="question1" name="question1"></textarea><br><br>
+                <div>Any question with a <span style="color:tomato;">*</span> is required</div><br>
+		<form id="applicationForm" action="/post/application.php" method="post" data-parsley-validate="">
+                    <label for="question1">What drew you to apply at Club Spectrum? <span style="color:tomato;">*</span></label><br>
+                    <textarea type="text" id="question1" name="question1" required=""></textarea><br><br>
 
-                    <label for="question2">How did you hear about us? *</label><br>
-                    <textarea type="text" id="question2" name="question2"></textarea><br><br>
+                    <label for="question2">How did you hear about us? <span style="color:tomato;">*</span></label><br>
+                    <textarea type="text" id="question2" name="question2"  required=""></textarea><br><br>
 
-                    <label for="question3">Are you available to work 9pm to 2am, Tues and Wed? *</label>
+                    <label for="question3">Are you available to work 9pm to 2am, Tues and Wed? <span style="color:tomato;">*</span></label>
                     <div id="question3">
-                        <input type="radio" id="question3Radio1" name="question3" value="Yes">
-			<label for="question3Radio1">Yes</label>
+                        <input type="radio" id="question3Radio1" name="question3" value="Yes" required="">
+			<label class="mr-4" for="question3Radio1">Yes</label>
                         <input type="radio" id="question3Radio2" name="question3" value="No">
-			<label for="question3Radio2">No</label>
+			<label class="mr-4" for="question3Radio2">No</label>
                         <input type="radio" id="question3Radio3" name="question3" value="Maybe">
 			<label for="question3Radio3">Maybe</label>
                     </div>
@@ -132,20 +136,20 @@
                     <label for="question4">If No or Maybe, what hours can you work and why?</label><br>
                     <textarea type="text" id="question4" name="question4"></textarea><br><br>
 
-                    <label for="question5">Are you available to work 9pm to 2am, Tues and Wed? *</label>
+                    <label for="question5">Are you available to work 9pm to 2am, Tues and Wed? <span style="color:tomato;">*</span></label>
                     <div id="question5">
-                        <input type="radio" id="question5Radio1" name="question5" value="Straight">
-			<label for="question5Radio1">Straight</label>
+                        <input type="radio" id="question5Radio1" name="question5" value="Straight" required="">
+			<label class="mr-4" for="question5Radio1">Straight</label>
                         <input type="radio" id="question5Radio2" name="question5" value="Gay">
-			<label for="question5Radio2">Gay</label>
+			<label class="mr-4" for="question5Radio2">Gay</label>
                         <input type="radio" id="question5Radio3" name="question5" value="Lesbian">
-			<label for="question5Radio3">Lesbian</label>
+			<label class="mr-4" for="question5Radio3">Lesbian</label>
                         <input type="radio" id="question5Radio4" name="question5" value="Bisexual">
-			<label for="question5Radio4">Bisexual</label>
+			<label class="mr-4" for="question5Radio4">Bisexual</label>
                         <input type="radio" id="question5Radio5" name="question5" value="Pansexual">
-			<label for="question5Radio5">Pansexual</label>
+			<label class="mr-4" for="question5Radio5">Pansexual</label>
                         <input type="radio" id="question5Radio6" name="question5" value="Asexual">
-			<label for="question5Radio6">Asexual</label>
+			<label class="mr-4" for="question5Radio6">Asexual</label>
                         <input type="radio" id="question5Radio6" name="question5" value="Other">
 			<label for="question5Radio6">Other</label>
                     </div>
@@ -153,77 +157,77 @@
                     <label for="question6">If other, could you specify?</label>
                     <input type="text" id="question6" name="question6"><br><br>
 
-                    <label for="question7">What position are you interested in? *</label>
+                    <label for="question7">What position are you interested in? <span style="color:tomato;">*</span></label>
                     <div>
-                       <input type="checkbox" id="question7Check1" name="question7Check1">
-                       <label for="question7Check1">Dancer</label>
-                       <input type="checkbox" id="question7Check2" name="question7Check2">
-                       <label for="question7Check2">Courtesan</label>
-                       <input type="checkbox" id="question7Check3" name="question7Check3">
-                       <label for="question7Check3">Bartender</label>
-                       <input type="checkbox" id="question7Check4" name="question7Check4">
-                       <label for="question7Check4">Host/Hostess</label>
-                       <input type="checkbox" id="question7Check5" name="question7Check5">
-                       <label for="question7Check5">Bard (or Bard Group)</label>
-                       <input type="checkbox" id="question7Check6" name="question7Check6">
+                       <input type="checkbox" id="question7Check1" name="question7[]" value="Dancer" required="" data-parsley-mincheck="1">
+                       <label class="mr-4" for="question7Check1">Dancer</label>
+                       <input type="checkbox" id="question7Check2" name="question7[]" value="Courtesan">
+                       <label class="mr-4" for="question7Check2">Courtesan</label>
+                       <input type="checkbox" id="question7Check3" name="question7[]" value="Bartender">
+                       <label class="mr-4" for="question7Check3">Bartender</label>
+                       <input type="checkbox" id="question7Check4" name="question7[]" value="Host/Hostess">
+                       <label class="mr-4" for="question7Check4">Host/Hostess</label>
+                       <input type="checkbox" id="question7Check5" name="question7[]" value="Bard">
+                       <label class="mr-4" for="question7Check5">Bard (or Bard Group)</label>
+                       <input type="checkbox" id="question7Check6" name="question7[]" value="Security">
                        <label for="question7Check6">Security</label>
                     </div><br>
 
-                    <label for="question8">If working as a courtesan, would you be opposed to clients of the same or opposite sex? *</label>
+                    <label for="question8">If working as a courtesan, would you be opposed to clients of the same or opposite sex? <span style="color:tomato;">*</span></label>
                     <div id="question8">
-                        <input type="radio" id="question8Radio1" name="question8" value="I will do same sex, but not opposite sex">
-			<label for="question8Radio1">I will do same sex, but not opposite sex</label>
+                        <input type="radio" id="question8Radio1" name="question8" value="I will do same sex, but not opposite sex" required="">
+			<label class="mr-4" for="question8Radio1">I will do same sex, but not opposite sex</label>
                         <input type="radio" id="question8Radio2" name="question8" value="I will do opposite sex, but not same sex">
-			<label for="question8Radio2">I will do opposite sex, but not same sex</label>
+			<label class="mr-4" for="question8Radio2">I will do opposite sex, but not same sex</label>
                         <input type="radio" id="question8Radio3" name="question8" value="I can do both">
-			<label for="question8Radio3">I can do both</label>
+			<label class="mr-4" for="question8Radio3">I can do both</label>
                         <input type="radio" id="question8Radio4" name="question8" value="Not applying as courtesan">
 			<label for="question8Radio4">Not applying as courtesan</label>
                     </div><br>
 
-                    <label for="question9">If working as a courtesan, would you be opposed to clients of the same or opposite sex? *</label>
+                    <label for="question9">If working as a courtesan, would you be opposed to clients of the same or opposite sex? <span style="color:tomato;">*</span></label>
                     <div id="question9">
-                        <input type="radio" id="question9Radio1" name="question9" value="Yes">
-			<label for="question9Radio1">Yes</label>
+                        <input type="radio" id="question9Radio1" name="question9" value="Yes" required="">
+			<label class="mr-4" for="question9Radio1">Yes</label>
                         <input type="radio" id="question9Radio2" name="question9" value="No">
-			<label for="question9Radio2">No</label>
+			<label class="mr-4" for="question9Radio2">No</label>
                         <input type="radio" id="question9Radio3" name="question9" value="Not applying as Courtesan">
 			<label for="question9Radio3">Not applying as Courtesan</label>
                     </div><br>
 
-                    <label for="question10">What server are you on? *</label>
+                    <label for="question10">What server are you on? <span style="color:tomato;">*</span></label>
                     <div id="question10">
-                        <input type="radio" id="question10Radio1" name="question10" value="Gilgamesh">
-			<label for="question10Radio1">Gilgamesh</label>
+                        <input type="radio" id="question10Radio1" name="question10" value="Gilgamesh" required="">
+			<label class="mr-4" for="question10Radio1">Gilgamesh</label>
                         <input type="radio" id="question10Radio2" name="question10" value="Adamantoise">
-			<label for="question10Radio2">Adamantoise</label>
+			<label class="mr-4" for="question10Radio2">Adamantoise</label>
                         <input type="radio" id="question10Radio3" name="question10" value="Jenova">
-			<label for="question10Radio3">Jenova</label>
+			<label class="mr-4" for="question10Radio3">Jenova</label>
                         <input type="radio" id="question10Radio4" name="question10" value="Faerie">
-	        	<label for="question10Radio4">Faerie</label>
+	        	<label class="mr-4" for="question10Radio4">Faerie</label>
                         <input type="radio" id="question10Radio5" name="question10" value="Sargatanas">
-			<label for="question10Radio5">Sargatanas</label>
+			<label class="mr-4" for="question10Radio5">Sargatanas</label>
                         <input type="radio" id="question10Radio6" name="question10" value="Midgardsormr">
-			<label for="question10Radio6">Midgardsormr</label>
+			<label class="mr-4" for="question10Radio6">Midgardsormr</label>
                         <input type="radio" id="question10Radio7" name="question10" value="Cactuar">
-			<label for="question10Radio7">Cactuar</label>
+			<label class="mr-4" for="question10Radio7">Cactuar</label>
                         <input type="radio" id="question10Radio8" name="question10" value="Siren">
         		<label for="question10Radio8">Siren</label>
                     </div><br>
 
-                    <label for="question11">What is your Discord ID? Are you a member of our Discord? *</label>
-                    <input type="text" id="question11" name="question11"><br><br>
+                    <label for="question11">What is your Discord ID? Are you a member of our Discord? <span style="color:tomato;">*</span></label>
+                    <input type="text" id="question11" name="question11"  required=""><br><br>
 
-                    <label for="question12">Speaking of Discord, even if you cannot communicate in voice chat, will you agree to have a presence in voice chat so you can listen to instructions when given? *</label>
+                    <label for="question12">Speaking of Discord, even if you cannot communicate in voice chat, will you agree to have a presence in voice chat so you can listen to instructions when given? <span style="color:tomato;">*</span></label>
                     <div id="question12">
-                        <input type="radio" id="question12Radio1" name="question12" value="Yes">
-			<label for="question12Radio1">Yes</label>
+                        <input type="radio" id="question12Radio1" name="question12" value="Yes" required="">
+			<label class="mr-4" for="question12Radio1">Yes</label>
                         <input type="radio" id="question12Radio2" name="question12" value="No">
 			<label for="question12Radio2">No</label>
                     </div><br>
 
-                    <label for="question13">Give us a closing statement to make yourself stand out. Tell us a little about you. *</label><br>
-                    <textarea type="text" id="question13" name="question13"></textarea><br><br>
+                    <label for="question13">Give us a closing statement to make yourself stand out. Tell us a little about you. <span style="color:tomato;">*</span></label><br>
+                    <textarea type="text" id="question13" name="question13"  required=""></textarea><br><br>
 
                     <input type="submit" value="Submit">
                 </form>

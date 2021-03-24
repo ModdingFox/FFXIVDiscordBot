@@ -38,7 +38,8 @@
                 isset($_POST['question3']) && !empty($_POST['question3']) &&
                 isset($_POST['question4']) &&
                 isset($_POST['question5']) && !empty($_POST['question5']) &&
-                isset($_POST['question6']) &&
+		isset($_POST['question6']) &&
+		isset($_POST['question7']) && !empty($_POST['question8']) &&
                 isset($_POST['question8']) && !empty($_POST['question8']) &&
                 isset($_POST['question9']) && !empty($_POST['question9']) &&
                 isset($_POST['question10']) && !empty($_POST['question10']) &&
@@ -47,24 +48,9 @@
 		isset($_POST['question13']) && !empty($_POST['question13'])
             )
 	    {
-       	        if (isset($_POST['question7Check1']) || isset($_POST['question7Check2']) || isset($_POST['question7Check3']) || isset($_POST['question7Check4']) || isset($_POST['question7Check5']) || isset($_POST['question7Check6']))
-		{
-		    $question7Array = [];
-		    if (isset($_POST['question7Check1'])){ array_push($question7Array, "Dancer"); }
-		    if (isset($_POST['question7Check2'])){ array_push($question7Array, "Courtesan"); }
-		    if (isset($_POST['question7Check3'])){ array_push($question7Array, "Bartender"); }
-		    if (isset($_POST['question7Check4'])){ array_push($question7Array, "Host/Hostess"); }
-		    if (isset($_POST['question7Check5'])){ array_push($question7Array, "Bard"); }
-		    if (isset($_POST['question7Check6'])){ array_push($question7Array, "Security"); }
-		    $question7 = join(", ", $question7Array);
-		    insertApplication($conn, $_POST['question1'], $_POST['question2'], $_POST['question3'], $_POST['question4'], $_POST['question5'], $_POST['question6'], $question7, $_POST['question8'], $_POST['question9'], $_POST['question10'], $_POST['question11'], $_POST['question12'], $_POST['question13']);
-		    header('Location: /');
-		}
-		else
-		{
-		    $json_result->status = 'Error';
-                    $json_result->error = 'No checked boxes in question 7';
-		}
+		$question7 = join(", ", $_POST['question7']);
+		insertApplication($conn, $_POST['question1'], $_POST['question2'], $_POST['question3'], $_POST['question4'], $_POST['question5'], $_POST['question6'], $question7, $_POST['question8'], $_POST['question9'], $_POST['question10'], $_POST['question11'], $_POST['question12'], $_POST['question13']);
+                header('Location: /');
             }
 	    else
 	    {
