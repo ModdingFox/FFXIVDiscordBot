@@ -1,13 +1,13 @@
 <?php
     require($_SERVER['DOCUMENT_ROOT'] . "/mySql.php");
     
-    function insertApplication($conn, $question1, $question2, $question3, $question4, $question5, $question6, $question7, $question8, $question9, $question10, $question11, $question12, $question13)
+    function insertApplication($conn, $guildId, $question1, $question2, $question3, $question4, $question5, $question6, $question7, $question8, $question9, $question10, $question11, $question12, $question13)
     {
         $json_result = json_decode('{}');
         #Ignored user has special chars
-        $insert_sql = 'INSERT INTO ClubSpectrum.applications (question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, question11, question12, question13) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        $insert_sql = 'INSERT INTO ClubSpectrum.applications (guildId, question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, question11, question12, question13) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         $insert_stmt = $conn->prepare($insert_sql);
-	$insert_stmt->bind_param("sssssssssssss", $question1, $question2, $question3, $question4, $question5, $question6, $question7, $question8, $question9, $question10, $question11, $question12, $question13);
+	$insert_stmt->bind_param("ssssssssssssss", $guildId, $question1, $question2, $question3, $question4, $question5, $question6, $question7, $question8, $question9, $question10, $question11, $question12, $question13);
 	
         if($insert_stmt->execute() === TRUE)
         {
@@ -49,7 +49,7 @@
             )
 	    {
 		$question7 = join(", ", $_POST['question7']);
-		insertApplication($conn, $_POST['question1'], $_POST['question2'], $_POST['question3'], $_POST['question4'], $_POST['question5'], $_POST['question6'], $question7, $_POST['question8'], $_POST['question9'], $_POST['question10'], $_POST['question11'], $_POST['question12'], $_POST['question13']);
+		insertApplication($conn, '806921306976419840', $_POST['question1'], $_POST['question2'], $_POST['question3'], $_POST['question4'], $_POST['question5'], $_POST['question6'], $question7, $_POST['question8'], $_POST['question9'], $_POST['question10'], $_POST['question11'], $_POST['question12'], $_POST['question13']);
                 header('Location: /');
             }
 	    else

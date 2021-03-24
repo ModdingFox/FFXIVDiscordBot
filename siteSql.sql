@@ -3,6 +3,7 @@ CREATE DATABASE ClubSpectrum;
 CREATE TABLE ClubSpectrum.applications
 (
     id        INT     NOT NULL AUTO_INCREMENT,
+    guildId   TEXT    NOT NULL,
     question1 TEXT,
     question2 TEXT,
     question3 TEXT,

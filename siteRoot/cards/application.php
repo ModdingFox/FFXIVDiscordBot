@@ -52,7 +52,7 @@
             <label for="question8Radio4"><input type="radio" id="question8Radio4" name="question8" value="Not applying as courtesan">Not applying as courtesan</label>
         </div><br>
         
-        <label for="question9">If working as a courtesan, would you be opposed to clients of the same or opposite sex? <span style="color:tomato;">*</span></label>
+        <label for="question9">If working as a courtesan, do you agree to have a test session to assess your skills? <span style="color:tomato;">*</span></label>
         <div id="question9">
             <label class="mr-4" for="question9Radio1"><input type="radio" id="question9Radio1" name="question9" value="Yes" required=""  data-parsley-errors-container="#question9">Yes</label>
             <label class="mr-4" for="question9Radio2"><input type="radio" id="question9Radio2" name="question9" value="No">No</label>
