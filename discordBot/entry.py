@@ -12,6 +12,7 @@ import normalizeMessages
 import permissions
 import privateCategories
 import reactRoleAssignment
+import staffApplications
 import textLogging
 import userBios
 import voiceLogging
@@ -33,13 +34,14 @@ client = commands.Bot(command_prefix=settingsDiscord.commandPrefix, intents=inte
 client.add_cog(botManagement.botManagementClass(client));
 client.add_cog(courtesan.courtesanClass(client, settingsMySql));
 client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));
-client.add_cog(eventCalendar.eventCalendarClass(client, settingsMySql));
+#client.add_cog(eventCalendar.eventCalendarClass(client, settingsMySql));
 client.add_cog(extraStuff.extraStuffClass(client));
 client.add_cog(lodestone.lodestoneClass(client));
 client.add_cog(normalizeMessages.normalizeMessagesClass(client));
 client.add_cog(permissions.PermissionsClass(client, settingsMySql));
 client.add_cog(privateCategories.privateCategoriesClass(client, settingsMySql));
 client.add_cog(reactRoleAssignment.reactRoleAssignmentClass(client, settingsMySql));
+client.add_cog(staffApplications.staffApplicationsClass(client, settingsMySql));
 client.add_cog(textLogging.textLoggingClass(client, settingsMySql));
 client.add_cog(userBios.userBiosClass(client, settingsMySql));
 client.add_cog(voiceLogging.voiceLoggingClass(client, settingsMySql));

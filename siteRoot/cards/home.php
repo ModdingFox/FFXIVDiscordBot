@@ -6,7 +6,7 @@
             <?php
                 $files = preg_grep('/^([^.])/', scandir($_SERVER['DOCUMENT_ROOT'] . "/img/home"));
                 $filesCount = count($files);
-                for ($x = 0; $x <= $filesCount; $x++) {
+                for ($x = 1; $x <= $filesCount; $x++) {
                     if ($x == 0) {
                         echo '<li data-target="#carouselDiv" data-slide-to="0" class="active"></li>';
                     } else {
