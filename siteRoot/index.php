@@ -25,7 +25,7 @@
                         require("cards/contact.php");
                         require("cards/home.php");
                         require("cards/menu.php");
-                        require("cards/venu.php");
+                        require("cards/venue.php");
                     ?>
                 </div>
             </div>

@@ -10,7 +10,7 @@
             <a class="nav-link mr-4" id="biosButton" href="#bios">Bios</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link mr-4" id="venuButton" href="#venu">Venu</a>
+            <a class="nav-link mr-4" id="venueButton" href="#venue">Venue</a>
         </li>
         <li class="nav-item">
             <a class="nav-link mr-4" id="applicationButton" href="#application">Hiring Application</a>
