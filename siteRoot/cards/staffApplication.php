@@ -27,7 +27,7 @@
         <div id="question4"></div>
         <br>
         
-        <label for="question5">Are you available to work 9pm to 2am, Tues and Wed? <span style="color:tomato;">*</span></label>
+        <label for="question5">What is your sexuality? <span style="color:tomato;">*</span></label>
         <div id="question5"></div>
         <br>
         

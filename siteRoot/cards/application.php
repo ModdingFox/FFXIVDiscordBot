@@ -20,7 +20,7 @@
         <label for="question4">If No or Maybe, what hours can you work and why?</label><br>
         <textarea type="text" id="question4" name="question4"></textarea><br><br>
         
-        <label for="question5">Are you available to work 9pm to 2am, Tues and Wed? <span style="color:tomato;">*</span></label>
+        <label for="question5">What is your sexuality? <span style="color:tomato;">*</span></label>
         <div id="question5">
             <label class="mr-4" for="question5Radio1"><input type="radio" id="question5Radio1" name="question5" value="Straight" required=""  data-parsley-errors-container="#question5">Straight</label>
             <label class="mr-4" for="question5Radio2"><input type="radio" id="question5Radio2" name="question5" value="Gay">Gay</label>

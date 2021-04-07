@@ -10,4 +10,7 @@ class normalizeMessagesClass(commands.Cog, name='Message Normalization'):
                 message.content = message.content.replace("“", "\"");
                 message.content = message.content.replace("”", "\"");
                 message.content = message.content.replace("’", "'");
+                message.content = message.content.replace("‘", "'");
+                message.content = message.content.replace("—", "-");
+                message.content = message.content.replace("…", "...");
             await discordClient.process_commands(message);

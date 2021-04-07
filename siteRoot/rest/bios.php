@@ -1,5 +1,6 @@
 <?php
     require($_SERVER['DOCUMENT_ROOT'] . "/mySql.php");
+    require($_SERVER['DOCUMENT_ROOT'] . "/htmlTools.php");
     
     function getBio($conn, $guildId)
     {
@@ -17,9 +18,9 @@
             {
 		$rowData = json_decode('{}');
                 $rowData->channelId = $row['channelId'];
-                $rowData->bioName = $row['bioName'];
-                $rowData->bioText = $row['bioText'];
-		$rowData->bioImage = $row['bioImage'];
+                $rowData->bioName = fixSpecialCharacters($row['bioName']);
+                $rowData->bioText = fixSpecialCharacters($row['bioText']);
+		$rowData->bioImage = fixSpecialCharacters($row['bioImage']);
 		array_push($result, $rowData);
 	    }
             $json_result->status = 'Success';
