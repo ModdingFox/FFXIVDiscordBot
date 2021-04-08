@@ -1,4 +1,4 @@
-Install scripts intended for CentOS 8
+Install scripts are intended for CentOS 8
 
 Update discordBot/conf/discord.json and discordBot/conf/mySql.json
 Run Install.sh from the repo root to setup the rest
