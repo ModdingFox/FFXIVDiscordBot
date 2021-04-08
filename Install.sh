@@ -30,6 +30,8 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </VirtualHost>
 EOF
 
+ln -s $(pwd)/siteRoot /var/www/clubspectrum.us
+
 systemctl enable httpd
 systemctl start httpd
 
