@@ -8,6 +8,43 @@ fi
 
 workingDirectory=$(pwd)
 
+yum install -h httpd
+
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --zone=public --add-port=443/tcp --permanent
+firewall-cmd --reload
+
+sed -ie 's|index.html|index.php|g' /etc/httpd/conf/httpd.conf && rm -f /etc/httpd/conf/httpd.conf
+
+cat > /etc/httpd/conf.d/80.conf <<EOF
+<VirtualHost *:80>
+    DocumentRoot "/var/www/clubspectrum.us"
+    ServerName clubspectrum.us
+    <Directory /var/www/clubspectrum.us>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+    </Directory>
+RewriteEngine on
+RewriteCond %{SERVER_NAME} =clubspectrum.us
+RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</VirtualHost>
+EOF
+
+systemctl enable httpd
+systemctl start httpd
+
+yum install -y \
+php.x86_64 \
+php-cli.x86_64 \
+php-common.x86_64 \
+php-fpm.x86_64 \
+php-json.x86_64 \
+php-mysqlnd.x86_64 \
+php-pdo.x86_64 \
+php-pear.noarch \
+php-process.x86_64 \
+php-xml.x86_64
+
 #MariaDB Install
 yum install -y mariadb-server.x86_64
 
@@ -96,3 +133,17 @@ systemctl daemon-reload
 systemctl enable logstash-httpd.service
 systemctl start logstash-httpd.service
 
+yum install -y npm
+
+mkdir -p siteRoot/npm
+cd siteRoot/npm
+
+npm install popper.js@1.14.7 --save
+npm install jquery@3.4.1 --save
+npm install datatables.net@1.10.24 --save
+npm install bootstrap@4.3.1 --save
+npm install parsleyjs@2.9.2 --save
+npm install underscore@1.10.2 --save
+npm install jquery.cookie@1.4.1 --save
+
+cd -
