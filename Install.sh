@@ -151,3 +151,33 @@ npm install underscore@1.10.2 --save
 npm install jquery.cookie@1.4.1 --save
 
 cd -
+
+yum install python3-pip.noarch python36-devel.x86_64 gcc openldap-devel.x86_64
+pip-3 install discord
+pip-3 install python-dotenv
+pip-3 install PyMySQL
+pip-3 install requests
+pip-3 install python-ldap
+pip-3 install beautifulsoup4
+
+cat > /usr/lib/systemd/system/discordBot.service <<EOF
+[Unit]
+Description=Discord Bot Service
+
+[Service]
+Type=simple
+SyslogIdentifier=discordBot
+User=root
+Group=root
+WorkingDirectory=${workingDirectory}/discordBot
+ExecStart=${workingDirectory}/discordBot/entry.py
+Restart=always
+TimeoutSec=60
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable discordBot.service
+systemctl start discordBot.service
