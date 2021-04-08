@@ -55,6 +55,8 @@ systemctl start mariadb
 
 mysql_secure_installation
 
+mysql -u root -h 127.0.0.1 -p < siteSql.sql
+
 #Grafana Install
 cat > /etc/yum.repos.d/grafana.repo <<EOF
 [grafana]
