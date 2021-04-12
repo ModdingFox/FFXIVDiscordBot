@@ -72,15 +72,21 @@ class staffApplicationsClass(commands.Cog, name='Staff Applications'):
         return result;
     
     async def updateStaffApplicationChannels(self, guild):
+        managementRoleIds = discordUtils.getRoleByName(guild, "Management");
+        managementRoleId = None;
+        if len(managementRoleIds) > 0:
+            managementRoleId = "<@&" + str(managementRoleIds[0]) + ">";
+        else:
+            managementRoleId = "@here"
         lastId = self.sqlGetLastApplicationId(guild.id);
         applications = self.sqlGetNewApplicationsId(guild.id, lastId);
-        messageText = "@here\n{0} submitted an application. To view it https://clubspectrum.us/staff.php/?applicationId={1}#application";
+        messageText = "{2}\n{0} submitted an application. To view it https://clubspectrum.us/staff.php/?applicationId={1}#application";
         messages = [];
         highestId = lastId;
         for application in applications.keys():
             if highestId < application:
                 highestId = application
-            messages.append(messageText.format(applications[application], application));
+            messages.append(messageText.format(applications[application], application, managementRoleId));
         for channelId in discordUtils.getChannelIdsByName(guild, "staff-applications"):
             channel = await discordUtils.fetchChannelById(guild, channelId);
             for message in messages:
