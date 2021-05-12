@@ -19,3 +19,12 @@ CREATE TABLE ClubSpectrum.applications
     question13 TEXT,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE ClubSpectrum.radar
+(
+    firstName      TEXT    NOT NULL,
+    lastName       TEXT    NOT NULL,
+    world          TEXT    NOT NULL,
+    inRangeTime    TIMESTAMP NULL,
+    outOfRangeTime TIMESTAMP NULL
+);
