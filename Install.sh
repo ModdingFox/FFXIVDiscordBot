@@ -152,7 +152,7 @@ npm install jquery.cookie@1.4.1 --save
 
 cd -
 
-yum install python3-pip.noarch python36-devel.x86_64 gcc openldap-devel.x86_64
+yum install -y python3-pip.noarch python36-devel.x86_64 gcc openldap-devel.x86_64
 pip-3 install discord
 pip-3 install python-dotenv
 pip-3 install PyMySQL
