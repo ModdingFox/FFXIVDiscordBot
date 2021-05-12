@@ -150,6 +150,8 @@ npm install parsleyjs@2.9.2 --save
 npm install underscore@1.10.2 --save
 npm install jquery.cookie@1.4.1 --save
 
+systemctl restart httpd
+
 cd -
 
 yum install -y python3-pip.noarch python36-devel.x86_64 gcc openldap-devel.x86_64
