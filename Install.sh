@@ -14,7 +14,7 @@ firewall-cmd --zone=public --add-port=80/tcp --permanent
 firewall-cmd --zone=public --add-port=443/tcp --permanent
 firewall-cmd --reload
 
-sed -ie 's|index.html|index.php|g' /etc/httpd/conf/httpd.conf && rm -f /etc/httpd/conf/httpd.conf
+sed -ie 's|index.html|index.php|g' /etc/httpd/conf/httpd.conf && rm -f /etc/httpd/conf/httpd.confe
 
 cat > /etc/httpd/conf.d/80.conf <<EOF
 <VirtualHost *:80>
