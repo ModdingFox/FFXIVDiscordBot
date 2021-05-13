@@ -22,8 +22,7 @@ CREATE TABLE ClubSpectrum.applications
 
 CREATE TABLE ClubSpectrum.radar
 (
-    firstName      TEXT    NOT NULL,
-    lastName       TEXT    NOT NULL,
+    name           TEXT    NOT NULL,
     world          TEXT    NOT NULL,
     inRangeTime    TIMESTAMP NULL,
     outOfRangeTime TIMESTAMP NULL
