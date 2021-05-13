@@ -11,6 +11,7 @@ import lodestone
 import normalizeMessages
 import permissions
 import privateCategories
+import radarList
 import reactRoleAssignment
 import staffApplications
 import textLogging
@@ -40,6 +41,7 @@ client.add_cog(lodestone.lodestoneClass(client));
 client.add_cog(normalizeMessages.normalizeMessagesClass(client));
 client.add_cog(permissions.PermissionsClass(client, settingsMySql));
 client.add_cog(privateCategories.privateCategoriesClass(client, settingsMySql));
+client.add_cog(radarList.radarListClass(client, settingsMySql));
 client.add_cog(reactRoleAssignment.reactRoleAssignmentClass(client, settingsMySql));
 client.add_cog(staffApplications.staffApplicationsClass(client, settingsMySql));
 client.add_cog(textLogging.textLoggingClass(client, settingsMySql));
