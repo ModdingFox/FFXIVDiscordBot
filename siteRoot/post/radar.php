@@ -60,8 +60,6 @@
 
 		foreach($addPlayers as $value)
 		{
-                    echo $value;
-                    $json_result->status = $value . " - ";
 	            $json_result = insertEntry($conn, $value, "");
 		    if($json_result->status == 'Error')
 		    {
