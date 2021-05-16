@@ -25,7 +25,7 @@
     function updateEntry($conn, $name, $world)
     {
         $json_result = json_decode('{}');
-        $update_sql = 'UPDATE ClubSpectrum.radar SET outOfRangeTime = NOW() WHERE name = ? AND world = ?';
+        $update_sql = 'UPDATE ClubSpectrum.radar SET outOfRangeTime = NOW() WHERE name = ? AND world = ? AND outOfRangeTime IS NULL';
         $update_stmt = $conn->prepare($update_sql);
         $update_stmt->bind_param("ss", $name, $world);
         
