@@ -1,7 +1,9 @@
 from discord.ext import commands
+from discord.utils import get
 from random import seed
 from random import randint
 import time
+import re
 
 class extraStuffClass(commands.Cog, name='Random Junk'):
     def __init__(self, discordClient):
@@ -76,3 +78,18 @@ class extraStuffClass(commands.Cog, name='Random Junk'):
                 break;
         
         await ctx.send("{0}\n\n{1} {2} {3}\nYou won {4} cookies".format(prizeString, items[slot1], items[slot2], items[slot3], payoutAmmount));
+    
+    @commands.command(brief="Random Member Select", description="Random Member Select")
+    async def randomMember(self, ctx, role):
+        roleMatch = re.search("\<\@\&(\d+)\>", role);
+        if roleMatch is not None:
+            highestRolePosition = 0;
+            targetRole = get(ctx.guild.roles, id=int(roleMatch.group(1)));
+            if targetRole is not None:
+                seed(time.time());
+                selectedRole = randint(0, len(targetRole.members) - 1);
+                await ctx.send("<@{0}> was selected.".format(targetRole.members[selectedRole].id));
+            else:
+                await ctx.send("Could not find specified role");
+        else:
+            await ctx.send("Must provide a valid role");
