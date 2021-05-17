@@ -75,9 +75,11 @@ class radarListClass(commands.Cog, name='Radar Plugin'):
         return result;
     
     async def updateGuildRadarChannels(self, guild):
+        users = self.sqlGetInRangeUsers()
         messages = [];
         currentMessage = "";
-        for user in self.sqlGetInRangeUsers():
+        messages.append("We currently have {0} players in the club".format(len(users)));
+        for user in users:
             currentMessage += user + "\n";
             if len(currentMessage) > 1500:
                 messages.append(currentMessage);

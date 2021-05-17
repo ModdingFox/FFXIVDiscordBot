@@ -163,10 +163,36 @@ class clubMenuClass(commands.Cog, name='Club Menu'):
                 targetMessage = await channel.fetch_message(int(messageId));
                 await targetMessage.edit(content=messageText);
     
+    async def updateGuildVIPMenuChannels(self, guild):
+        drinkMenuItems = self.getMenuItems(guild.id, "drinkVIPMenu");
+        drinkSpecialMenuItems = self.getMenuItems(guild.id, "drinkSpecialVIPMenu");
+        foodMenuItems = self.getMenuItems(guild.id, "foodVIPMenu");
+        messageText = "~(DRINKS)~\n{0}\n~(DRINK SPECIALS)~\n{1}\n~(SNACKS & APPS)~\n{2}";
+        drinkItemsText = "";
+        drinkSpecialItemsText = "";
+        foodItemsText = "";
+        for item in drinkMenuItems:
+            drinkItemsText += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
+        for item in drinkSpecialMenuItems:
+            drinkSpecialItemsText += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
+        for item in foodMenuItems:
+            foodItemsText += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
+        messageText = messageText.format(drinkItemsText, drinkSpecialItemsText, foodItemsText);
+        for channelId in discordUtils.getChannelIdsByName(guild, "vip-menu"):
+            channel = await discordUtils.fetchChannelById(guild, channelId);
+            messageId = self.sqlGetMenuMessageId(guild.id, channelId);
+            if messageId is None:
+                sentMessage = await channel.send(messageText);
+                self.sqlSetMenuMessageId(guild.id, channelId, sentMessage.id);
+            else:
+                targetMessage = await channel.fetch_message(int(messageId));
+                await targetMessage.edit(content=messageText);
+    
     @tasks.loop(minutes=5)
     async def updateMenuTask(self):
         for guild in self.discordClient.guilds:
             await self.updateGuildMenuChannels(guild);
+            await self.updateGuildVIPMenuChannels(guild);
     
     def __init__(self, discordClient, settingsMySql):
         self.discordClient = discordClient;
@@ -181,9 +207,23 @@ class clubMenuClass(commands.Cog, name='Club Menu'):
         else:
             await ctx.send("Failed To Add Drink\nItem: {0}\nCost: {1}".format(itemName, cost));
     
+    @commands.command(brief="Creates a new drink menu item or changes an existing ones price", description="Creates a new drink menu item or changes an existing ones price")
+    async def addDrinkItemVIP(self, ctx, itemName, cost):
+        if self.addMenuItem(ctx.guild.id, str(itemName), int(cost), "drinkVIPMenu"):
+            await ctx.send("Added Drink\nItem: {0}\nCost: {1}".format(itemName, cost));
+        else:
+            await ctx.send("Failed To Add Drink\nItem: {0}\nCost: {1}".format(itemName, cost));
+    
     @commands.command(brief="Creates a new drink special menu item or changes an existing ones price", description="Creates a new drink special menu item or changes an existing ones price")
     async def addDrinkSpecialItem(self, ctx, itemName, cost):
         if self.addMenuItem(ctx.guild.id, str(itemName), int(cost), "drinkSpecialMenu"):
+            await ctx.send("Added Drink Special\nItem: {0}\nCost: {1}".format(itemName, cost));
+        else:
+            await ctx.send("Failed To Add Drink Special \nItem: {0}\nCost: {1}".format(itemName, cost));
+    
+    @commands.command(brief="Creates a new drink special menu item or changes an existing ones price", description="Creates a new drink special menu item or changes an existing ones price")
+    async def addDrinkSpecialItemVIP(self, ctx, itemName, cost):
+        if self.addMenuItem(ctx.guild.id, str(itemName), int(cost), "drinkSpecialVIPMenu"):
             await ctx.send("Added Drink Special\nItem: {0}\nCost: {1}".format(itemName, cost));
         else:
             await ctx.send("Failed To Add Drink Special \nItem: {0}\nCost: {1}".format(itemName, cost));
@@ -195,9 +235,23 @@ class clubMenuClass(commands.Cog, name='Club Menu'):
         else:
             await ctx.send("Failed To Add Food\nItem: {0}\nCost: {1}".format(itemName, cost));
     
+    @commands.command(brief="Creates a new food menu item or changes an existing ones price", description="Creates a new food menu item or changes an existing ones price")
+    async def addFoodItemVIP(self, ctx, itemName, cost):
+        if self.addMenuItem(ctx.guild.id, str(itemName), int(cost), "foodVIPMenu"):
+            await ctx.send("Added Food\nItem: {0}\nCost: {1}".format(itemName, cost));
+        else:
+            await ctx.send("Failed To Add Food\nItem: {0}\nCost: {1}".format(itemName, cost));
+    
     @commands.command(brief="Removes a drink menu item", description="Removes a drink menu item")
     async def removeDrinkItem(self, ctx, itemName):
         if self.removeMenuItem(ctx.guild.id, str(itemName), "drinkMenu"):
+            await ctx.send("Removed Drink: {0}".format(itemName));
+        else:
+            await ctx.send("Failed To Remove Drink: {0}".format(itemName));
+    
+    @commands.command(brief="Removes a drink menu item", description="Removes a drink menu item")
+    async def removeDrinkItemVIP(self, ctx, itemName):
+        if self.removeMenuItem(ctx.guild.id, str(itemName), "drinkVIPMenu"):
             await ctx.send("Removed Drink: {0}".format(itemName));
         else:
             await ctx.send("Failed To Remove Drink: {0}".format(itemName));
@@ -209,9 +263,23 @@ class clubMenuClass(commands.Cog, name='Club Menu'):
         else:
             await ctx.send("Failed To Remove Drink Special: {0}".format(itemName));
     
+    @commands.command(brief="Removes a drink special menu item", description="Removes a drink special menu item")
+    async def removeDrinkSpecialItemVIP(self, ctx, itemName):
+        if self.removeMenuItem(ctx.guild.id, str(itemName), "drinkSpecialVIPMenu"):
+            await ctx.send("Removed Drink Special: {0}".format(itemName));
+        else:
+            await ctx.send("Failed To Remove Drink Special: {0}".format(itemName));
+    
     @commands.command(brief="Removes a food menu item", description="Removes a food menu item")
     async def removeFoodItem(self, ctx, itemName):
         if self.removeMenuItem(ctx.guild.id, str(itemName), "foodMenu"):
+            await ctx.send("Removed Food: {0}".format(itemName));
+        else:
+            await ctx.send("Failed To Remove Food: {0}".format(itemName));
+    
+    @commands.command(brief="Removes a food menu item", description="Removes a food menu item")
+    async def removeFoodItemVIP(self, ctx, itemName):
+        if self.removeMenuItem(ctx.guild.id, str(itemName), "foodVIPMenu"):
             await ctx.send("Removed Food: {0}".format(itemName));
         else:
             await ctx.send("Failed To Remove Food: {0}".format(itemName));
@@ -226,6 +294,16 @@ class clubMenuClass(commands.Cog, name='Club Menu'):
             message += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
         await ctx.send(message);
     
+    @commands.command(brief="Gets the current drink menu", description="Gets the current drink menu")
+    async def drinkMenuVIP(self, ctx):
+        message = "~(DRINKS)~\n";
+        for item in self.getMenuItems(ctx.guild.id, "drinkVIPMenu"):
+            message += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
+        message += "\n~(DRINK SPECIALS)~\n";
+        for item in self.getMenuItems(ctx.guild.id, "drinkSpecialVIPMenu"):
+            message += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
+        await ctx.send(message);
+    
     @commands.command(brief="Gets the current food menu", description="Gets the current food menu")
     async def foodMenu(self, ctx):
         message = "~(SNACKS & APPS)~\n";
@@ -233,6 +311,14 @@ class clubMenuClass(commands.Cog, name='Club Menu'):
             message += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
         await ctx.send(message);
     
+    @commands.command(brief="Gets the current food menu", description="Gets the current food menu")
+    async def foodMenuVIP(self, ctx):
+        message = "~(SNACKS & APPS)~\n";
+        for item in self.getMenuItems(ctx.guild.id, "foodVIPMenu"):
+            message += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
+        await ctx.send(message);
+    
     @commands.command(brief="Triggers an update to the menu channels", description="Triggers an update to the menu channels")
     async def updateMenuChannels(self, ctx):
         await self.updateGuildMenuChannels(ctx.guild);
+        await self.updateGuildVIPMenuChannels(ctx.guild);
