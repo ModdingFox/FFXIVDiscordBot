@@ -42,10 +42,18 @@
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET')
 	{
-            if ($_GET['method'] === 'foodMenu')
+            if ($_GET['method'] === 'foodVIPMenu')
+            {
+                $json_result = getMenuItems($conn, "806921306976419840", "foodVIPMenu");
+            }
+	    elseif ($_GET['method'] === 'foodMenu')
 	    {
                  $json_result = getMenuItems($conn, "806921306976419840", "foodMenu");
 	    }
+            elseif ($_GET['method'] === 'drinkVIPMenu')
+            {
+                $json_result = getMenuItems($conn, "806921306976419840", "drinkVIPMenu");
+            }
             elseif ($_GET['method'] === 'drinkMenu')
             {
                 $json_result = getMenuItems($conn, "806921306976419840", "drinkMenu");
@@ -53,6 +61,10 @@
             elseif ($_GET['method'] === 'drinkSpecialMenu')
             {
                  $json_result = getMenuItems($conn, "806921306976419840", "drinkSpecialMenu");
+	    }
+            elseif ($_GET['method'] === 'drinkSpecialVIPMenu')
+            {
+                 $json_result = getMenuItems($conn, "806921306976419840", "drinkSpecialVIPMenu");
             }
             else
             {

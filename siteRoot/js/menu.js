@@ -7,9 +7,9 @@ window.addEventListener("load", function(){
         success: function (response) {
             var post_return = JSON.parse(response);
             if(post_return.status == 'Success') {
-		jQuery.each(post_return.result, function() {
-		    $("#drinkMenu").append("<h5>" + this["menuItem"] + " - " + this["itemCost"] + " gil</h5>");
-	        });
+                jQuery.each(post_return.result, function() {
+                    $("#drinkMenu").append("<h5>" + this["menuItem"] + " - " + this["itemCost"] + " gil</h5>");
+                });
             }
             else if (post_return.status == 'Warning') {
                 console.log(post_return.status + " " + post_return.warning);
@@ -20,7 +20,7 @@ window.addEventListener("load", function(){
             else { console.log("Did not get status from server"); }
         }
     });
-    
+
     jQuery.ajax({
         type: 'GET',
         url: "rest/clubMenu.php?method=drinkSpecialMenu",
@@ -42,7 +42,7 @@ window.addEventListener("load", function(){
             else { console.log("Did not get status from server"); }
         }
     });
-    
+
     jQuery.ajax({
         type: 'GET',
         url: "rest/clubMenu.php?method=foodMenu",
@@ -64,6 +64,4 @@ window.addEventListener("load", function(){
             else { console.log("Did not get status from server"); }
         }
     });
-
 });
-

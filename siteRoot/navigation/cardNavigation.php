@@ -5,7 +5,14 @@
         </li>
         <li class="nav-item">
             <a class="nav-link mr-4" id="menuButton" href="#menu">Menu</a>
-        </li>
+	</li>
+        <?php
+            if (basename($_SERVER['PHP_SELF']) == "indexVIP.php") {
+                echo '        <li class="nav-item">';
+	        echo '            <a class="nav-link mr-4" id="menuButton" href="#vipMenu">VIP Menu</a>';
+   	        echo '        </li>';
+	    }
+        ?>
         <li class="nav-item">
             <a class="nav-link mr-4" id="biosButton" href="#bios">Bios</a>
         </li>

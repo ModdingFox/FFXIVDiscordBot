@@ -105,6 +105,6 @@ class staffApplicationsClass(commands.Cog, name='Staff Applications'):
         self.updateStaffApplicationsTask.start();
     
     @commands.command(brief="Force an update of the staff-applications channels", description="Force an update of the staff-applications channels")
-    async def updateStaffAplications(self, ctx):
+    async def updateStaffApplication(self, ctx):
         await self.updateStaffApplicationChannels(ctx.guild);
 

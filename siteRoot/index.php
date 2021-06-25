@@ -12,6 +12,7 @@
 	<script src="/js/navigation.js"></script>
         <script src="/js/bios.js"></script>
         <script src="/js/menu.js"></script>
+        <script src="/js/vipMenu.js"></script>
         <link href="/css/global.css" rel="stylesheet">
     </head>
     <body class="bg-dark text-light">
@@ -25,6 +26,7 @@
                         require("cards/contact.php");
                         require("cards/home.php");
                         require("cards/menu.php");
+                        require("cards/vipMenu.php");
                         require("cards/venue.php");
                     ?>
                 </div>
