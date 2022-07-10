@@ -15,8 +15,6 @@ CREATE TABLE ClubSpectrum.applications
     question9 TEXT,
     question10 TEXT,
     question11 TEXT,
-    question12 TEXT,
-    question13 TEXT,
     PRIMARY KEY (id)
 );
 

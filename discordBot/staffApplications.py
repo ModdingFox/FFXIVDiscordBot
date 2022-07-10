@@ -13,11 +13,11 @@ class staffApplicationsClass(commands.Cog, name='Staff Applications'):
         
         try:
             with connection.cursor() as cursor:
-                sql = "SELECT id, question11 FROM ClubSpectrum.applications WHERE guildId = %s AND id > %s";
+                sql = "SELECT id, question9 FROM ClubSpectrum.applications WHERE guildId = %s AND id > %s";
                 cursor.execute(sql, (str(guildId), lastApplicationId));
                 results = cursor.fetchall();
                 for queryResult in results:
-                    result[queryResult["id"]] = queryResult["question11"];
+                    result[queryResult["id"]] = queryResult["question9"];
         finally:
             connection.close();
         

@@ -8,7 +8,7 @@ fi
 
 workingDirectory=$(pwd)
 
-yum install -y httpd
+yum install -y httpd epel-release
 
 firewall-cmd --zone=public --add-port=80/tcp --permanent
 firewall-cmd --zone=public --add-port=443/tcp --permanent

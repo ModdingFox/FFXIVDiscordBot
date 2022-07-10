@@ -5,7 +5,7 @@
     {
 	$json_result = json_decode('{}');
         
-        $select_sql = 'SELECT question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, question11, question12, question13 FROM ClubSpectrum.applications WHERE id = ?';
+        $select_sql = 'SELECT question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, question11 FROM ClubSpectrum.applications WHERE id = ?';
 	$select_stmt = $conn->prepare($select_sql);
 	$select_stmt->bind_param("s", $applicationId);
         
@@ -27,8 +27,6 @@
                 $rowData->question9 = $row['question9'];
                 $rowData->question10 = $row['question10'];
                 $rowData->question11 = $row['question11'];
-                $rowData->question12 = $row['question12'];
-                $rowData->question13 = $row['question13'];
                 $result = $rowData;
             }
             $json_result->status = 'Success';
