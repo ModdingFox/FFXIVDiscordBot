@@ -2,7 +2,7 @@
   "Author": "Tyst Jal",
   "Name": "ClubSpectrumRadar",
   "Punchline": "Radar Plugin For ClubSpectrum",
-  "Description": "Radar Plugin For ClubSpectrum",
+  "Description": "Radar Plugin For ClubSpectrum. Use /csRadar to access settings.",
   "InternalName": "ClubSpectrumRadar",
   "ApplicableVersion": "any",
   "Tags": [ "ClubSpectrum" ]

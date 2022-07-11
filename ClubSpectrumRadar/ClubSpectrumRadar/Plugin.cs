@@ -10,7 +10,7 @@ namespace ClubSpectrumRadar
     {
         public string Name => "ClubSpectrumRadar";
 
-        private const string commandName = "/pmycommand";
+        private const string commandName = "/csRadar";
 
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
@@ -30,7 +30,7 @@ namespace ClubSpectrumRadar
             // you might normally want to embed resources and load them from the manifest stream
             var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png");
             var goatImage = this.PluginInterface.UiBuilder.LoadImage(imagePath);
-            this.PluginUi = new PluginUI(this.Configuration, goatImage);
+            this.PluginUi = new PluginUI(this.Configuration);
 
             this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
             {
