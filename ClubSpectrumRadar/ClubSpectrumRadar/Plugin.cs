@@ -1,162 +1,66 @@
 ﻿using Dalamud.Game.Command;
+using Dalamud.IoC;
 using Dalamud.Plugin;
-using System;
-using System.Net;
-
-using System.Threading.Tasks;
-using Dalamud.Game.ClientState.Actors;
-using System.Threading;
-using System.Collections;
-
-using Newtonsoft.Json;
-using System.Net.Http;
+using System.IO;
+using System.Reflection;
 
 namespace ClubSpectrumRadar
 {
-    public class Plugin : IDalamudPlugin
+    public sealed class Plugin : IDalamudPlugin
     {
-        public string Name => "Club Spectrum Radar";
+        public string Name => "ClubSpectrumRadar";
 
-        private const string commandName = "/csRadar";
+        private const string commandName = "/pmycommand";
 
-        private DalamudPluginInterface pi;
-        private Configuration configuration;
-        private PluginUI ui;
+        private DalamudPluginInterface PluginInterface { get; init; }
+        private CommandManager CommandManager { get; init; }
+        private Configuration Configuration { get; init; }
+        private PluginUI PluginUi { get; init; }
 
-        public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
-        private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
-
-        private Task getPlayersTask;
-        private CancellationTokenSource getPlayersCancellationTokenSource;
-
-        private ArrayList playerLastSeenList = new ArrayList();
-
-        private class playerPayloadObject
+        public Plugin(
+            [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
+            [RequiredVersion("1.0")] CommandManager commandManager)
         {
-            public long timeStamp;
-            public ArrayList addPlayers;
-            public ArrayList removePlayers;
+            this.PluginInterface = pluginInterface;
+            this.CommandManager = commandManager;
 
-            public playerPayloadObject()
+            this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            this.Configuration.Initialize(this.PluginInterface);
+
+            // you might normally want to embed resources and load them from the manifest stream
+            var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png");
+            var goatImage = this.PluginInterface.UiBuilder.LoadImage(imagePath);
+            this.PluginUi = new PluginUI(this.Configuration, goatImage);
+
+            this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
             {
-                TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-                timeStamp = (long)t.TotalSeconds;
-                addPlayers = new ArrayList();
-                removePlayers = new ArrayList();
-            }
-        }
-
-        public void Initialize(DalamudPluginInterface pluginInterface)
-        {
-            this.pi = pluginInterface;
-
-            this.configuration = this.pi.GetPluginConfig() as Configuration ?? new Configuration();
-            this.configuration.Initialize(this.pi);
-
-            this.ui = new PluginUI(this.configuration);
-
-            this.pi.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
-            {
-                HelpMessage = "Config options for the Club Spectrum Radar"
+                HelpMessage = "A useful message to display in /xlhelp"
             });
 
-            getPlayersCancellationTokenSource = new CancellationTokenSource();
-            getPlayersTask = Task.Run(getPlayersTaskAction);
-
-            this.pi.UiBuilder.OnBuildUi += DrawUI;
-            this.pi.UiBuilder.OnOpenConfigUi += (sender, args) => DrawConfigUI();
+            this.PluginInterface.UiBuilder.Draw += DrawUI;
+            this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
         }
 
         public void Dispose()
         {
-            this.ui.Dispose();
-
-            getPlayersCancellationTokenSource?.Cancel();
-            while (getPlayersTask != null && !getPlayersTask.IsCompleted)
-            {
-                Thread.Sleep(1);
-            }
-
-            getPlayersTask?.Dispose();
-            getPlayersCancellationTokenSource?.Dispose();
-            this.pi.CommandManager.RemoveHandler(commandName);
-            this.pi.Dispose();
+            this.PluginUi.Dispose();
+            this.CommandManager.RemoveHandler(commandName);
         }
 
         private void OnCommand(string command, string args)
         {
-            this.ui.Visible = true;
+            // in response to the slash command, just display our main ui
+            this.PluginUi.Visible = true;
         }
 
         private void DrawUI()
         {
-            this.ui.Draw();
+            this.PluginUi.Draw();
         }
 
         private void DrawConfigUI()
         {
-            this.ui.SettingsVisible = true;
-        }
-
-        private void getPlayersTaskAction()
-        {
-            while (!getPlayersCancellationTokenSource.IsCancellationRequested)
-            {
-                if (this.configuration.RadarScanEnabled)
-                {
-                    var localPlayer = this.pi.ClientState.LocalPlayer;
-                    if (localPlayer == null)
-                    {
-                        continue;
-                    }
-
-                    ArrayList foundUsers = new ArrayList();
-                    playerPayloadObject playerPayload = new playerPayloadObject();
-
-                    for (var i = 0; i < this.pi.ClientState.Actors.Length; i++)
-                    {
-                        var actor = this.pi.ClientState.Actors[i];
-                        if (actor != null && actor.ObjectKind == ObjectKind.Player)
-                        {
-                            PluginLog.Information("Seen: " + actor.Name);
-                            foundUsers.Add(actor.Name);
-                        }
-                    }
-
-                    foreach (string currentUser in foundUsers)
-                    {
-                        if (!playerLastSeenList.Contains(currentUser)) { playerPayload.addPlayers.Add(currentUser); }
-                    }
-
-                    foreach (string currentUser in playerLastSeenList)
-                    {
-                        if (!foundUsers.Contains(currentUser)) { playerPayload.removePlayers.Add(currentUser); }
-                    }
-
-                    if (playerPayload.addPlayers.Count > 0 || playerPayload.removePlayers.Count > 0)
-                    {
-                        string payloadString = JsonConvert.SerializeObject(playerPayload);
-                        PluginLog.Information(payloadString);
-
-                        HttpClient http = new HttpClient();
-                        HttpResponseMessage response = http.PostAsync(this.configuration.UploadTo, new StringContent(payloadString)).Result;
-
-                        if (response.StatusCode == HttpStatusCode.OK)
-                        {
-                            playerLastSeenList = foundUsers;
-
-                            PluginLog.Information(response.Content.ReadAsStringAsync().Result);
-                            PluginLog.Information("Payload sent");
-                        }
-                        else { PluginLog.Error("Error: Could not contact the server to update list"); }
-                    }
-                }
-                else
-                {
-                    Thread.Sleep(1000);
-                }
-                getPlayersCancellationTokenSource.Token.WaitHandle.WaitOne(1000);
-            }
+            this.PluginUi.SettingsVisible = true;
         }
     }
 }

@@ -1,11 +1,9 @@
 {
   "Author": "Tyst Jal",
-  "Name": "Club Spectrum Radar",
-  "Description": "A simple radar add that sends info about the players surrounding you to an api",
+  "Name": "ClubSpectrumRadar",
+  "Punchline": "Radar Plugin For ClubSpectrum",
+  "Description": "Radar Plugin For ClubSpectrum",
   "InternalName": "ClubSpectrumRadar",
-  "AssemblyVersion": "0.0.1",
-  "RepoUrl": "https://github.com/ModdingFox",
   "ApplicableVersion": "any",
-  "Tags": [ "Club Spectrum", "Radar" ],
-  "DalamudApiLevel": 2
+  "Tags": [ "ClubSpectrum" ]
 }

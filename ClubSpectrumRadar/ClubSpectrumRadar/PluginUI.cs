@@ -4,10 +4,15 @@ using System.Numerics;
 
 namespace ClubSpectrumRadar
 {
+    // It is good to have this be disposable in general, in case you ever need it
+    // to do any cleanup
     class PluginUI : IDisposable
     {
         private Configuration configuration;
 
+        private ImGuiScene.TextureWrap goatImage;
+
+        // this extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
         public bool Visible
         {
@@ -22,18 +27,27 @@ namespace ClubSpectrumRadar
             set { this.settingsVisible = value; }
         }
 
-        public PluginUI(Configuration configuration)
+        // passing in the image here just for simplicity
+        public PluginUI(Configuration configuration, ImGuiScene.TextureWrap goatImage)
         {
             this.configuration = configuration;
+            this.goatImage = goatImage;
         }
 
         public void Dispose()
         {
-
+            this.goatImage.Dispose();
         }
 
         public void Draw()
         {
+            // This is our only draw handler attached to UIBuilder, so it needs to be
+            // able to draw any windows we might have open.
+            // Each method checks its own visibility/state to ensure it only draws when
+            // it actually makes sense.
+            // There are other ways to do this, but it is generally best to keep the number of
+            // draw delegates as low as possible.
+
             DrawMainWindow();
             DrawSettingsWindow();
         }
@@ -45,24 +59,23 @@ namespace ClubSpectrumRadar
                 return;
             }
 
-            ImGui.SetNextWindowSize(new Vector2(225, 175), ImGuiCond.Always);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(225, 175), new Vector2(float.MaxValue, float.MaxValue));
-            if (ImGui.Begin("Club Spectrum Radar - Status", ref this.visible, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+            ImGui.SetNextWindowSize(new Vector2(375, 330), ImGuiCond.FirstUseEver);
+            ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
+            if (ImGui.Begin("My Amazing Window", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
-                ImGui.Text("Radar Scan Enabled: " + ((this.configuration.RadarScanEnabled) ?("Running"):("Stopped")));
-                ImGui.Text("Say Chat Scan Enabled: " + ((this.configuration.SayChatScanEnabled) ? ("Running") : ("Stopped")));
-                ImGui.Text("Shout Chat Scan Enabled: " + ((this.configuration.ShoutChatScanEnabled) ? ("Running") : ("Stopped")));
-                ImGui.Text("Yell Chat Scan Enabled: " + ((this.configuration.YellChatScanEnabled) ? ("Running") : ("Stopped")));
-                ImGui.Text($"Upload To: {this.configuration.UploadTo}");
-                
-                ImGui.Spacing();
-                ImGui.Separator();
-                ImGui.Spacing();
+                ImGui.Text($"The random config bool is {this.configuration.SomePropertyToBeSavedAndWithADefault}");
 
                 if (ImGui.Button("Show Settings"))
                 {
                     SettingsVisible = true;
                 }
+
+                ImGui.Spacing();
+
+                ImGui.Text("Have a goat:");
+                ImGui.Indent(55);
+                ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
+                ImGui.Unindent(55);
             }
             ImGui.End();
         }
@@ -74,51 +87,16 @@ namespace ClubSpectrumRadar
                 return;
             }
 
-            ImGui.SetNextWindowSize(new Vector2(250, 175), ImGuiCond.Always);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(250, 175), new Vector2(float.MaxValue, float.MaxValue));
-            if (ImGui.Begin("Club Spectrum Radar - Config", ref this.settingsVisible,
-                ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+            ImGui.SetNextWindowSize(new Vector2(232, 75), ImGuiCond.Always);
+            if (ImGui.Begin("A Wonderful Configuration Window", ref this.settingsVisible,
+                ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
-                var RadarScanEnabledValue = this.configuration.RadarScanEnabled;
-                if (ImGui.Checkbox("Radar Scan", ref RadarScanEnabledValue))
+                // can't ref a property, so use a local copy
+                var configValue = this.configuration.SomePropertyToBeSavedAndWithADefault;
+                if (ImGui.Checkbox("Random Config Bool", ref configValue))
                 {
-                    this.configuration.RadarScanEnabled = RadarScanEnabledValue;
-                    this.configuration.Save();
-                }
-                
-                var SayChatScanEnabledValue = this.configuration.SayChatScanEnabled;
-                if (ImGui.Checkbox("Say Chat Scan", ref SayChatScanEnabledValue))
-                {
-                    this.configuration.SayChatScanEnabled = SayChatScanEnabledValue;
-                    this.configuration.Save();
-                }
-
-                var ShoutChatScanEnabledValue = this.configuration.ShoutChatScanEnabled;
-                if (ImGui.Checkbox("Shout Chat Scan", ref ShoutChatScanEnabledValue))
-                {
-                    this.configuration.ShoutChatScanEnabled = ShoutChatScanEnabledValue;
-                    this.configuration.Save();
-                }
-
-                var YellChatScanEnabledValue = this.configuration.YellChatScanEnabled;
-                if (ImGui.Checkbox("Yell Chat Scan", ref YellChatScanEnabledValue))
-                {
-                    this.configuration.YellChatScanEnabled = YellChatScanEnabledValue;
-                    this.configuration.Save();
-                }
-
-                var UploadToValue = this.configuration.UploadTo;
-                uint bufferSize = 512;
-                byte[] buff = new byte[bufferSize];
-                byte[] uploadOriginalBytes = System.Text.Encoding.UTF8.GetBytes(UploadToValue);
-                for (int i = 0; i < bufferSize; i++) { buff[i] = 0x00; }
-                for (int i = 0; i < bufferSize && i < uploadOriginalBytes.Length; i++) { buff[i] = uploadOriginalBytes[i]; }
-
-                if (ImGui.InputText("Upload To", buff, bufferSize))
-                {
-                    string newData = System.Text.Encoding.UTF8.GetString(buff);
-                    newData = newData.Trim('\0');
-                    this.configuration.UploadTo = newData;
+                    this.configuration.SomePropertyToBeSavedAndWithADefault = configValue;
+                    // can save immediately on change, if you don't want to provide a "Save and Close" button
                     this.configuration.Save();
                 }
             }

@@ -9,14 +9,12 @@ namespace ClubSpectrumRadar
     {
         public int Version { get; set; } = 0;
 
-        public bool RadarScanEnabled { get; set; } = false;
-        public bool SayChatScanEnabled { get; set; } = false;
-        public bool ShoutChatScanEnabled { get; set; } = false;
-        public bool YellChatScanEnabled { get; set; } = false;
-        public string UploadTo { get; set; } = "";
-        
+        public bool SomePropertyToBeSavedAndWithADefault { get; set; } = true;
+
+        // the below exist just to make saving less cumbersome
+
         [NonSerialized]
-        private DalamudPluginInterface pluginInterface;
+        private DalamudPluginInterface? pluginInterface;
 
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
@@ -25,7 +23,7 @@ namespace ClubSpectrumRadar
 
         public void Save()
         {
-            this.pluginInterface.SavePluginConfig(this);
+            this.pluginInterface!.SavePluginConfig(this);
         }
     }
 }
