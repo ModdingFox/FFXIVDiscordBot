@@ -4,7 +4,7 @@ function doNavigation() {
 
     if(window.location.hash) {
         if(window.location.hash.toLowerCase() == "#discord") {
-            window.location = "https://discord.gg/32WZHSyxws";
+            window.location = "/discord";
         } else {
             button = $(window.location.hash + "Button");
             cardBody = $(window.location.hash + "CardBody");
