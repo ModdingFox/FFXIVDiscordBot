@@ -8,6 +8,7 @@ import courtesan
 import eventCalendar
 import extraStuff
 import lodestone
+import manageChatHistory
 import normalizeMessages
 import permissions
 import privateCategories
@@ -38,6 +39,7 @@ client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));
 #client.add_cog(eventCalendar.eventCalendarClass(client, settingsMySql));
 client.add_cog(extraStuff.extraStuffClass(client));
 client.add_cog(lodestone.lodestoneClass(client));
+client.add_cog(manageChatHistory.manageChatHistoryClass(client, settingsMySql));
 client.add_cog(normalizeMessages.normalizeMessagesClass(client));
 client.add_cog(permissions.PermissionsClass(client, settingsMySql));
 client.add_cog(privateCategories.privateCategoriesClass(client, settingsMySql));

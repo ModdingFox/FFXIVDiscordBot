@@ -14,7 +14,7 @@ class radarListClass(commands.Cog, name='Radar Plugin'):
         
         try:
             with connection.cursor() as cursor:
-                sql = "SELECT name, world FROM ClubSpectrum.radar WHERE outOfRangeTime IS NULL ORDER BY name ASC";
+                sql = "SELECT distinct name, world FROM ClubSpectrum.radar WHERE outOfRangeTime IS NULL ORDER BY name ASC";
                 cursor.execute(sql);
                 results = cursor.fetchall();
                 for queryResult in results:
