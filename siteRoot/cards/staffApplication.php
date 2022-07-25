@@ -11,7 +11,7 @@
         </ul>
     </div>
     <div id="currentApplication">
-        <label for="question1">Are you available to work 9pm to 2am PT, Tues and Wed? <span style="color:tomato;">*</span></label>
+        <label for="question1">Are you available to work 9pm to 2am PT, Tues and Wed?<span style="color:tomato;">*</span></label>
         <div id="question1"></div>
         <br>
         

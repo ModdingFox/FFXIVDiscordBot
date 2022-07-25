@@ -4,7 +4,7 @@
     <div><p>Thank you for your interest in Club Spectrum! This application is to assist us in sifting through all interested parties to find those most suitable to fit our venue. To ensure a speedy reply, check that every necessary and applicable field is filled out to the best of your ability. We look forward to receiving your application.</p></div>
     <div>Any question with a <span style="color:tomato;">*</span> is required</div><br>
     <form id="applicationForm" action="/post/application.php" method="post" data-parsley-validate="">
-        <label for="question1">Are you available to work 9pm to 2am, Wed and Sat? <span style="color:tomato;">*</span></label>
+        <label for="question1">Are you available to work 9pm to 2am PT, Wed and Sat?<span style="color:tomato;">*</span></label>
         <div id="question1">
             <label class="mr-4" for="question1Radio1"><input type="radio" id="question1Radio1" name="question1" value="Yes" required="" data-parsley-errors-container="#question1">Yes</label>
             <label class="mr-4" for="question1Radio2"><input type="radio" id="question1Radio2" name="question1" value="No">No</label>
