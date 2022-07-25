@@ -30,13 +30,14 @@
         
         <label for="question5">What position are you interested in? <span style="color:tomato;">*</span></label>
         <div id="question5">
-            <label class="mr-4" for="question5Check1"><input type="checkbox" id="question5Check1" name="question5[]" value="Dancer" required="" data-parsley-mincheck="1"  data-parsley-errors-container="#question5">Dancer</label>
-            <label class="mr-4" for="question5Check2"><input type="checkbox" id="question5Check2" name="question5[]" value="Courtesan">Courtesan</label>
-            <label class="mr-4" for="question5Check3"><input type="checkbox" id="question5Check3" name="question5[]" value="Bartender">Bartender</label>
-            <label class="mr-4" for="question5Check4"><input type="checkbox" id="question5Check4" name="question5[]" value="Host/Hostess">Host/Hostess</label>
-	    <label class="mr-4" for="question5Check5"><input type="checkbox" id="question5Check5" name="question5[]" value="Bard">Bard (or Bard Group)</label>
-            <label class="mr-4" for="question5Check6"><input type="checkbox" id="question5Check6" name="question5[]" value="DJ">DJ</label>
-            <label class="mr-4" for="question5Check7"><input type="checkbox" id="question5Check7" name="question5[]" value="Security">Security</label>
+            <label class="mr-4" for="question5Check1"><input type="checkbox" id="question5Check1" name="question5[]" value="Courtesan" required="" data-parsley-mincheck="1"  data-parsley-errors-container="#question5">Courtesan</label>
+            <label class="mr-4" for="question5Check2"><input type="checkbox" id="question5Check2" name="question5[]" value="Bartender">Bartender</label>
+            <label class="mr-4" for="question5Check3"><input type="checkbox" id="question5Check3" name="question5[]" value="Host/Hostess">Host/Hostess</label>
+	    <label class="mr-4" for="question5Check4"><input type="checkbox" id="question5Check4" name="question5[]" value="Bard">Bard (or Bard Group)</label>
+            <label class="mr-4" for="question5Check5"><input type="checkbox" id="question5Check5" name="question5[]" value="DJ">DJ</label>
+	    <label class="mr-4" for="question5Check6"><input type="checkbox" id="question5Check6" name="question5[]" value="Security">Security</label>
+            <label class="mr-4" for="question5Check7"><input type="checkbox" id="question5Check7" name="question5[]" value="Runner">Runner</label>
+            <label class="mr-4" for="question5Check8"><input type="checkbox" id="question5Check8" name="question5[]" value="Server">Server</label>
         </div><br>
         
         <label for="question6">If working as a courtesan, would you be opposed to clients of the same or opposite sex? <span style="color:tomato;">*</span></label>
