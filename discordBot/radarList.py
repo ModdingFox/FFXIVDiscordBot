@@ -5,6 +5,9 @@ from discord.ext import commands
 from discord.ext import tasks
 import pymysql.cursors
 import re
+from random import seed
+from random import randint
+import time
 
 class radarListClass(commands.Cog, name='Radar Plugin'):
     def sqlGetInRangeUsers(self):
@@ -75,7 +78,7 @@ class radarListClass(commands.Cog, name='Radar Plugin'):
         return result;
     
     async def updateGuildRadarChannels(self, guild):
-        users = self.sqlGetInRangeUsers()
+        users = self.sqlGetInRangeUsers();
         messages = [];
         currentMessage = "";
         messages.append("We currently have {0} players in the club".format(len(users)));
@@ -125,3 +128,10 @@ class radarListClass(commands.Cog, name='Radar Plugin'):
     @commands.command(brief="Triggers an update to the radar channels", description="Triggers an update to the radar channels")
     async def updateRadarChannels(self, ctx):
         await self.updateGuildRadarChannels(ctx.guild);
+
+    @commands.command(brief="Randomly selects someone from the radar list", description="Randomly selects someone from the radar list")
+    async def randomPlayerFromRadar(self, ctx):
+        players = self.sqlGetInRangeUsers();
+        seed(time.time());
+        selectedPlayer = randint(0, len(players) - 1);
+        await ctx.send("{0} was selected.".format(players[selectedPlayer]));
