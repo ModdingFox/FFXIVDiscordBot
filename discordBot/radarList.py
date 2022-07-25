@@ -132,6 +132,9 @@ class radarListClass(commands.Cog, name='Radar Plugin'):
     @commands.command(brief="Randomly selects someone from the radar list", description="Randomly selects someone from the radar list")
     async def randomPlayerFromRadar(self, ctx):
         players = self.sqlGetInRangeUsers();
-        seed(time.time());
-        selectedPlayer = randint(0, len(players) - 1);
-        await ctx.send("{0} was selected.".format(players[selectedPlayer]));
+        if len(players) == 0:
+            await ctx.send("No players in radar to select from");
+        else:
+            seed(time.time());
+            selectedPlayer = randint(0, len(players) - 1);
+            await ctx.send("{0} was selected.".format(players[selectedPlayer]));
