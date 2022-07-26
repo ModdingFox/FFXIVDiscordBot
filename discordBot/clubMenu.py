@@ -142,17 +142,23 @@ class clubMenuClass(commands.Cog, name='Club Menu'):
         drinkMenuItems = self.getMenuItems(guild.id, "drinkMenu");
         drinkSpecialMenuItems = self.getMenuItems(guild.id, "drinkSpecialMenu");
         foodMenuItems = self.getMenuItems(guild.id, "foodMenu");
-        messageText = "~(DRINKS)~\n{0}\n~(DRINK SPECIALS)~\n{1}\n~(SNACKS & APPS)~\n{2}";
-        drinkItemsText = "";
-        drinkSpecialItemsText = "";
-        foodItemsText = "";
-        for item in drinkMenuItems:
-            drinkItemsText += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
-        for item in drinkSpecialMenuItems:
-            drinkSpecialItemsText += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
-        for item in foodMenuItems:
-            foodItemsText += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
-        messageText = messageText.format(drinkItemsText, drinkSpecialItemsText, foodItemsText);
+        messageData = [];
+        if len(drinkMenuItems) > 0:
+            drinkItemsText = "";
+            for item in drinkMenuItems:
+                drinkItemsText += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
+            messageData.append("~(DRINKS)~\n{0}".format(drinkItemsText));
+        if len(drinkSpecialMenuItems) > 0:
+            drinkSpecialItemsText = "";
+            for item in drinkSpecialMenuItems:
+                drinkSpecialItemsText += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
+            messageData.append("~(DRINK SPECIALS)~\n{0}".format(drinkSpecialItemsText));
+        if len(foodMenuItems) > 0:
+            foodItemsText = "";
+            for item in foodMenuItems:
+                foodItemsText += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
+            messageData.append("~(SNACKS & APPS)~\n{0}".format(foodItemsText()));
+        messageText = "\n".join(messageData);
         for channelId in discordUtils.getChannelIdsByName(guild, "menu"):
             channel = await discordUtils.fetchChannelById(guild, channelId);
             messageId = self.sqlGetMenuMessageId(guild.id, channelId);
@@ -167,17 +173,23 @@ class clubMenuClass(commands.Cog, name='Club Menu'):
         drinkMenuItems = self.getMenuItems(guild.id, "drinkVIPMenu");
         drinkSpecialMenuItems = self.getMenuItems(guild.id, "drinkSpecialVIPMenu");
         foodMenuItems = self.getMenuItems(guild.id, "foodVIPMenu");
-        messageText = "~(DRINKS)~\n{0}\n~(DRINK SPECIALS)~\n{1}\n~(SNACKS & APPS)~\n{2}";
-        drinkItemsText = "";
-        drinkSpecialItemsText = "";
-        foodItemsText = "";
-        for item in drinkMenuItems:
-            drinkItemsText += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
-        for item in drinkSpecialMenuItems:
-            drinkSpecialItemsText += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
-        for item in foodMenuItems:
-            foodItemsText += "{0} - {1} Gil\n".format(item["menuItem"], item["itemCost"]);
-        messageText = messageText.format(drinkItemsText, drinkSpecialItemsText, foodItemsText);
+        messageData = [];
+        if len(drinkMenuItems) > 0:
+            drinkItemsText = "";
+            for item in drinkMenuItems:
+                drinkItemsText += "{0}\n".format(item["menuItem"]);
+            messageData.append("~(DRINKS)~\n{0}".format(drinkItemsText));
+        if len(drinkSpecialMenuItems) > 0:
+            drinkSpecialItemsText = "";
+            for item in drinkSpecialMenuItems:
+                drinkSpecialItemsText += "{0}\n".format(item["menuItem"]);
+            messageData.append("~(DRINK SPECIALS)~\n{0}".format(drinkSpecialItemsText));
+        if len(foodMenuItems) > 0:
+            foodItemsText = "";
+            for item in foodMenuItems:
+                foodItemsText += "{0}\n".format(item["menuItem"]);
+            messageData.append("~(SNACKS & APPS)~\n{0}".format(foodItemsText()));
+        messageText = "\n".join(messageData);
         for channelId in discordUtils.getChannelIdsByName(guild, "vip-menu"):
             channel = await discordUtils.fetchChannelById(guild, channelId);
             messageId = self.sqlGetMenuMessageId(guild.id, channelId);
