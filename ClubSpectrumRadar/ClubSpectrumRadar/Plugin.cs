@@ -24,8 +24,6 @@ namespace ClubSpectrumRadar
 
         private Task getPlayersTask;
         private CancellationTokenSource getPlayersCancellationTokenSource;
-        private ArrayList playerLastSeenList = new ArrayList();
-
 
         private DalamudPluginInterface PluginInterface { get; init; }
         private ClientState ClientState { get; init; }
@@ -55,21 +53,11 @@ namespace ClubSpectrumRadar
                         if (actor != null && actor.ObjectKind == ObjectKind.Player)
                         {
                             PluginLog.Information("Seen: " + actor.Name);
-                            foundUsers.Add(actor.Name.ToString());
+                            playerPayload.players.Add(actor.Name.ToString());
                         }
                     }
 
-                    foreach (string currentUser in foundUsers)
-                    {
-                        if (!this.playerLastSeenList.Contains(currentUser)) { playerPayload.addPlayers.Add(currentUser); }
-                    }
-
-                    foreach (string currentUser in this.playerLastSeenList)
-                    {
-                        if (!foundUsers.Contains(currentUser)) { playerPayload.removePlayers.Add(currentUser); }
-                    }
-
-                    if (playerPayload.addPlayers.Count > 0 || playerPayload.removePlayers.Count > 0)
+                    if (playerPayload.players.Count > 0)
                     {
                         string payloadString = JsonConvert.SerializeObject(playerPayload);
                         PluginLog.Information(payloadString);
@@ -79,13 +67,13 @@ namespace ClubSpectrumRadar
 
                         if (response.StatusCode == HttpStatusCode.OK)
                         {
-                            playerLastSeenList = foundUsers;
-
                             PluginLog.Information(response.Content.ReadAsStringAsync().Result);
                             PluginLog.Information("Payload sent");
                         }
                         else { PluginLog.Error("Error: Could not contact the server to update list"); }
                     }
+
+                    Thread.Sleep(5000);
                 }
                 else
                 {

@@ -5,16 +5,11 @@ namespace ClubSpectrumRadar
 {
     internal class playerPayloadObject
     {
-        public long timeStamp;
-        public ArrayList addPlayers;
-        public ArrayList removePlayers;
+        public ArrayList players;
 
         public playerPayloadObject()
         {
-            TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-            timeStamp = (long)t.TotalSeconds;
-            addPlayers = new ArrayList();
-            removePlayers = new ArrayList();
+            players = new ArrayList();
         }
     }
 }

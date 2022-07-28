@@ -8,24 +8,17 @@ import re
 from random import seed
 from random import randint
 import time
+from kazoo.client import KazooClient
 
 class radarListClass(commands.Cog, name='Radar Plugin'):
-    def sqlGetInRangeUsers(self):
+    def zkGetInRangeUsers(self):
         result = [];
-        
-        connection = pymysql.connect(host = self.settingsMySql.host, user = self.settingsMySql.user, password = self.settingsMySql.password, cursorclass=pymysql.cursors.DictCursor);
-        
-        try:
-            with connection.cursor() as cursor:
-                sql = "SELECT distinct name, world FROM ClubSpectrum.radar WHERE outOfRangeTime IS NULL ORDER BY name ASC";
-                cursor.execute(sql);
-                results = cursor.fetchall();
-                for queryResult in results:
-                    print(queryResult["name"] + "(" + queryResult["world"] + ")");
-                    result.append(queryResult["name"] + "(" + queryResult["world"] + ")");
-        finally:
-            connection.close();
-        
+        zookeeper = KazooClient(hosts='127.0.0.1:2181');
+        zookeeper.start();
+        children = zookeeper.get_children("/radar/players");
+        for childName in children:
+            result.append(childName);
+        zookeeper.stop();
         return result;
     
     def sqlGetChannelRadarMessageIds(self, guildId, channelId):
@@ -78,7 +71,7 @@ class radarListClass(commands.Cog, name='Radar Plugin'):
         return result;
     
     async def updateGuildRadarChannels(self, guild):
-        users = self.sqlGetInRangeUsers();
+        users = self.zkGetInRangeUsers();
         messages = [];
         currentMessage = "";
         messages.append("We currently have {0} players in the club".format(len(users)));
@@ -131,7 +124,7 @@ class radarListClass(commands.Cog, name='Radar Plugin'):
 
     @commands.command(brief="Randomly selects someone from the radar list", description="Randomly selects someone from the radar list")
     async def randomPlayerFromRadar(self, ctx):
-        players = self.sqlGetInRangeUsers();
+        players = self.zkGetInRangeUsers();
         if len(players) == 0:
             await ctx.send("No players in radar to select from");
         else:

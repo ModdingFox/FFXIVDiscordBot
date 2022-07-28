@@ -154,6 +154,18 @@ systemctl restart httpd
 
 cd -
 
+cat <<EOF | sudo tee /etc/yum.repos.d/influxdb.repo
+[influxdb]
+name = InfluxDB Repository - RHEL \$releasever
+baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
+enabled = 1
+gpgcheck = 1
+gpgkey = https://repos.influxdata.com/influxdb.key
+EOF
+yum install -y influxdb.x86_64
+systemctl enable influxdb
+systemctl start influxdb
+
 yum install -y python3-pip.noarch python36-devel.x86_64 gcc openldap-devel.x86_64
 pip-3 install discord
 pip-3 install python-dotenv
@@ -161,6 +173,8 @@ pip-3 install PyMySQL
 pip-3 install requests
 pip-3 install python-ldap
 pip-3 install beautifulsoup4
+pip-3 install kazoo
+pip-3 install influxdb
 
 cat > /usr/lib/systemd/system/discordBot.service <<EOF
 [Unit]
@@ -183,3 +197,103 @@ EOF
 systemctl daemon-reload
 systemctl enable discordBot.service
 systemctl start discordBot.service
+
+#Zookeeper Install
+yum install -y java-1.8.0-openjdk.x86_64
+cd /opt
+wget -o apache-zookeeper.tar.gz https://archive.apache.org/dist/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz
+tar -xf apache-zookeeper-*.tar.gz
+rm -f apache-zookeeper.tar.gz
+mv apache-zookeeper-* apache-zookeeper
+cd /opt/apache-zookeeper
+mkdir data
+egrep -v "^dataDir|^#" conf/zoo_sample.cfg | grep . > conf/zoo.cfg
+echo "dataDir=/opt/apache-zookeeper/data" >> conf/zoo.cfg
+mv conf/zoo_sample.cfg conf/zoo.cfg
+adduser -M -r -s /sbin/nologin zookeeper
+chown -R zookeeper:zookeeper /opt/apache-zookeeper
+
+cat > /usr/lib/systemd/system/zookeeper.service <<EOF
+[Unit]
+Description=Zookeeker Service
+
+[Service]
+Type=forking
+SyslogIdentifier=zookeeper
+User=zookeeper
+Group=zookeeper
+WorkingDirectory=/opt/apache-zookeeper
+ExecStart=/opt/apache-zookeeper/bin/zkServer.sh start
+ExecStop=/opt/apache-zookeeper/bin/zkServer.sh stop
+PIDFile=/opt/apache-zookeeper/data/zookeeper_server.pid
+Restart=always
+TimeoutSec=60
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl start zookeeper
+systemctl enable zookeeper
+
+yum install -y cppunit-devel.x86_64 --enablerepo powertools
+yum install -y javapackages-tools.noarch --enablerepo appstream
+yum install -y maven.noarch
+mkdir -p /opt/zkBuild
+cd /opt/zkBuild
+wget -O apache-zookeeper.tar.gz https://archive.apache.org/dist/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0.tar.gz
+tar -xf apache-zookeeper.tar.gz
+rm -f apache-zookeeper.tar.gz
+mv apache-zookeeper-* apache-zookeeper
+chown -R root:root apache-zookeeper
+cd apache-zookeeper
+mvn compile
+cd zookeeper-client/zookeeper-client-c
+autoreconf -if
+./configure --prefix=/usr/
+make
+make install
+libtool --finish /usr/local/lib
+
+yum install -y php-devel
+git clone https://github.com/php-zookeeper/php-zookeeper.git
+phpize
+./configure --with-libzookeeper-dir=/usr
+make
+make install
+echo "extension=zookeeper.so" > /etc/php.d/20-zookeeper.ini
+
+cat > /usr/lib/systemd/system/radarMaintenanceProcess.service <<EOF
+[Unit]
+Description=Radar Maintenance Process Service
+
+[Service]
+Type=oneshot
+SyslogIdentifier=radarMaintenanceProcess
+User=root
+Group=root
+WorkingDirectory=${workingDirectory}/python
+ExecStart=${workingDirectory}/python/radarMaintenanceProcess.py
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > /usr/lib/systemd/system/radarMaintenanceProcess.timer <<EOF
+[Unit]
+Description=Radar Maintenance Process Timer
+Requires=radarMaintenanceProcess.service
+
+[Timer]
+Unit=radarMaintenanceProcess.service
+OnCalendar=*-*-* *:*:00,30
+
+[Install]
+WantedBy=timers.target
+EOF
+
+systemctl daemon-reload
+systemctl enable radarMaintenanceProcess.timer
+systemctl start radarMaintenanceProcess.timer
+
