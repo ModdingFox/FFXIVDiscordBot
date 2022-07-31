@@ -192,7 +192,12 @@ class userBiosClass(commands.Cog, name='Bios'):
                             self.sqlSetBioMessageId(guild.id, userId, channelId, sentMessage.id);
                         else:
                             targetMessage = await channel.fetch_message(int(messageId));
-                            await targetMessage.edit(content=message, embed=embedImage);
+                            print("eval user {0}. {1}".format(bioInfo["bioName"], targetMessage.embeds[0].image.url))
+                            if targetMessage.content != message:
+                                await targetMessage.edit(content=message);
+                            if len(targetMessage.embeds) > 0 and targetMessage.embeds[0].image.url != bioInfo["bioImage"]:
+                                print("update embed {0}".format(bioInfo["bioName"]));
+                                await targetMessage.edit(embed=embedImage);
                 messageUsers = self.sqlGetChannelBioMessageIds(guild.id, channelId);
                 for messageUser in messageUsers:
                     if int(messageUser["discordUserId"]) not in userIds:

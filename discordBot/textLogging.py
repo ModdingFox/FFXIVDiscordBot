@@ -58,13 +58,19 @@ class textLoggingClass(commands.Cog, name='Text Logging'):
         async def on_raw_message_edit(payload):
             guild = get(discordClient.guilds, id=int(payload.data["guild_id"]));
             
-            #Normalize Quotes in messages. Some devices send wierd ones
-            message = payload.data["content"].replace("“", "\"");
-            message = message.replace("”", "\"");
+            message = "";
+            if  "content" in payload.data:
+                #Normalize Quotes in messages. Some devices send wierd ones
+                message = payload.data["content"].replace("“", "\"");
+                message = message.replace("”", "\"");
             
             channel = get(guild.channels, id=int(payload.data["channel_id"]));
-            author = get(guild.members, id=int(payload.data["author"]["id"]));
+
+            authorId = "unknown";
+            authorUserTag = "unknown";
+            if "author" in payload.data:
+              author = get(guild.members, id=int(payload.data["author"]["id"]));
+              authorId = author.id;
+              authorUserTag="{0}({1})".format(author.name, author.nick);
             
-            authorUserTag="{0}({1})".format(author.name, author.nick);
-            
-            self.logMessage(author.id, authorUserTag, guild.id, channel.id, channel.name, payload.data["id"], message, ["See Original Message"], True);
+            self.logMessage(authorId, authorUserTag, guild.id, channel.id, channel.name, payload.data["id"], message, ["See Original Message"], True);
