@@ -166,15 +166,15 @@ yum install -y influxdb.x86_64
 systemctl enable influxdb
 systemctl start influxdb
 
-yum install -y python3-pip.noarch python36-devel.x86_64 gcc openldap-devel.x86_64
-pip-3 install discord
-pip-3 install python-dotenv
-pip-3 install PyMySQL
-pip-3 install requests
-pip-3 install python-ldap
-pip-3 install beautifulsoup4
-pip-3 install kazoo
-pip-3 install influxdb
+yum install -y python39.x86_64 python39-pip.noarch python39-devel.x86_64 gcc openldap-devel.x86_64
+pip-3.9 install discord
+pip-3.9 install python-dotenv
+pip-3.9 install PyMySQL
+pip-3.9 install requests
+pip-3.9 install python-ldap
+pip-3.9 install beautifulsoup4
+pip-3.9 install kazoo
+pip-3.9 install influxdb
 
 cat > /usr/lib/systemd/system/discordBot.service <<EOF
 [Unit]

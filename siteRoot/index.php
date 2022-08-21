@@ -1,7 +1,7 @@
 <?php
     switch($_GET["path"]) {
         case "dj":
-            header("Location: https://www.twitch.tv/Djaikon");
+            header("Location: https://www.twitch.tv/psukhegiatros");
 	    exit();
 	case "discord":
             header("Location: https://discord.gg/32WZHSyxws");
