@@ -5,6 +5,7 @@ from settings import discordSettings, mySqlSettings, ldapSettings
 import botManagement
 import clubMenu
 import courtesan
+import discordDiffTool
 import eventCalendar
 import extraStuff
 import lodestone
@@ -24,21 +25,26 @@ import discord
 from discord.ext import commands
 from discord.ext import tasks
 
-async def main():
-    settingsDiscord = discordSettings.discordSettingsClass("conf/discord.json");
-    settingsMySql = mySqlSettings.mySqlSettingsClass("conf/mySql.json");
-    settingsLdap = ldapSettings.ldapSettingsClass("conf/ldap.json");
+settingsDiscord = discordSettings.discordSettingsClass("conf/discord.json");
+settingsMySql = mySqlSettings.mySqlSettingsClass("conf/mySql.json");
+settingsLdap = ldapSettings.ldapSettingsClass("conf/ldap.json");
+
+intents = discord.Intents.default();
+intents.members = True;
+intents.message_content = True;
     
-    intents = discord.Intents.default();
-    intents.members = True;
-    intents.message_content = True;
-    
-    client = commands.Bot(command_prefix=settingsDiscord.commandPrefix, intents=intents);
-    
+client = commands.Bot(command_prefix=settingsDiscord.commandPrefix, intents=intents);
+
+async def loadCogs():
+    global settingsDiscord;
+    global settingsMySql;
+    global settingsLdap;
+    global client;
     #Load Cogs
     await client.add_cog(botManagement.botManagementClass(client));
     await client.add_cog(courtesan.courtesanClass(client, settingsMySql));
     await client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));
+    await client.add_cog(discordDiffTool.discordDiffToolClass(client));
     #await client.add_cog(eventCalendar.eventCalendarClass(client, settingsMySql));
     await client.add_cog(extraStuff.extraStuffClass(client));
     await client.add_cog(lodestone.lodestoneClass(client));
@@ -52,11 +58,12 @@ async def main():
     await client.add_cog(textLogging.textLoggingClass(client, settingsMySql));
     await client.add_cog(userBios.userBiosClass(client, settingsMySql));
     await client.add_cog(voiceLogging.voiceLoggingClass(client, settingsMySql));
-    
-    @client.event
-    async def on_ready():
-        print(f'{client.user} has connected to Discord!');
-    
-    await client.start(settingsDiscord.token);
+asyncio.run(loadCogs());
+
+@client.event
+async def on_ready():
+    print(f'{client.user} has connected to Discord!');
+
+client.run(settingsDiscord.token);
 
 asyncio.run(main());
