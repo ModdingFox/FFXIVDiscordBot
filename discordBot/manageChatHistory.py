@@ -103,19 +103,22 @@ class manageChatHistoryClass(commands.Cog, name='Manage Chat History'):
             minMessageDateTime = datetime.utcnow() - timedelta(days=14);
             maxMessageDateTime = datetime.utcnow() - timedelta(minutes=retentionMinutes);
             channel = await discordUtils.fetchChannelById(guild, channelId);
-            messages = await channel.history(after=minMessageDateTime, before=maxMessageDateTime, limit=100, oldest_first=True).flatten();
-            if len(messages) > 0:
-                try:
-                    await channel.delete_messages(messages);
-                    return len(messages);
-                except ClientException:
-                    print("Somehow tried to delete to many messages");
-                except Forbidden:
-                    print("Bot doesnt have permission to delete messages in <#{0}>".format(channelId));
-                except NotFound:
-                    print("Message deleted before bot could delete it");
-                except HTTPException:
-                    print("Delete message failed");
+            if channel is not None:
+                messages = await channel.history(after=minMessageDateTime, before=maxMessageDateTime, limit=100, oldest_first=True).flatten();
+                if len(messages) > 0:
+                    try:
+                        await channel.delete_messages(messages);
+                        return len(messages);
+                    except ClientException:
+                        print("Somehow tried to delete to many messages");
+                    except Forbidden:
+                        print("Bot doesnt have permission to delete messages in <#{0}>".format(channelId));
+                    except NotFound:
+                        print("Message deleted before bot could delete it");
+                    except HTTPException:
+                        print("Delete message failed");
+            else:
+                print("Could not find channelId {0}".format(channelId));
         return 0;
 
     async def updateChannels(self, guild):
@@ -183,7 +186,7 @@ class manageChatHistoryClass(commands.Cog, name='Manage Chat History'):
 
     @commands.command(brief="Run channel message expiration cleanup", description="Run channel message expiration cleanup. Only removes 100 messages at a time.")
     async def runMessageCleanup(self, ctx):
-        await ctx.send("Running message cleanup this may take sometime".format(result));
+        await ctx.send("Running message cleanup this may take sometime");
         result = await self.updateChannels(ctx.guild);
         await ctx.send("Removed {0} messages".format(result));
 
