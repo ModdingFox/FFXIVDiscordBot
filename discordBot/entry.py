@@ -5,7 +5,7 @@ from settings import discordSettings, mySqlSettings, ldapSettings
 import botManagement
 import clubMenu
 import courtesan
-import discordDiffTool
+import discordLayoutTool
 import eventCalendar
 import extraStuff
 import lodestone
@@ -44,7 +44,7 @@ async def loadCogs():
     await client.add_cog(botManagement.botManagementClass(client));
     await client.add_cog(courtesan.courtesanClass(client, settingsMySql));
     await client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));
-    await client.add_cog(discordDiffTool.discordDiffToolClass(client));
+    await client.add_cog(discordLayoutTool.discordLayoutToolClass(client));
     #await client.add_cog(eventCalendar.eventCalendarClass(client, settingsMySql));
     await client.add_cog(extraStuff.extraStuffClass(client));
     await client.add_cog(lodestone.lodestoneClass(client));
