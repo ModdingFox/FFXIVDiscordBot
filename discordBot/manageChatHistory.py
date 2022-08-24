@@ -104,7 +104,7 @@ class manageChatHistoryClass(commands.Cog, name='Manage Chat History'):
             maxMessageDateTime = datetime.utcnow() - timedelta(minutes=retentionMinutes);
             channel = await discordUtils.fetchChannelById(guild, channelId);
             if channel is not None:
-                messages = await channel.history(after=minMessageDateTime, before=maxMessageDateTime, limit=100, oldest_first=True).flatten();
+                messages = [ message async for message in channel.history(after=minMessageDateTime, before=maxMessageDateTime, limit=100, oldest_first=True)];
                 if len(messages) > 0:
                     try:
                         await channel.delete_messages(messages);

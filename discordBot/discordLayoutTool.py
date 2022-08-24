@@ -62,7 +62,7 @@ class discordLayoutToolClass(commands.Cog, name='Discord Layout Tool'):
             permissioneAttributes['priority_speaker'] = permissions.priority_speaker;
             permissioneAttributes['read_message_history'] = permissions.read_message_history;
             permissioneAttributes['read_messages'] = permissions.read_messages;
-            permissioneAttributes['request_to_speak'] = permissions.request_to_speak;
+            #permissioneAttributes['request_to_speak'] = permissions.request_to_speak; disabled as it seems to mean nothing atm
             permissioneAttributes['send_messages'] = permissions.send_messages;
             permissioneAttributes['send_messages_in_threads'] = permissions.send_messages_in_threads;
             permissioneAttributes['send_tts_messages'] = permissions.send_tts_messages;
@@ -425,6 +425,84 @@ class discordLayoutToolClass(commands.Cog, name='Discord Layout Tool'):
                 categoriesData[currentCategory.name]['voice_channels']
             );
 
+    def premissionsFromOverwrite(self, permissions, overwrites):
+        effectivePremissions = {};
+        allow = {};
+        deny = {};
+        if "allow" in overwrites.keys():
+            allow = overwrites["allow"];
+        if "deny" in overwrites.keys():
+            deny = overwrites["deny"];
+        for key in permissions:
+            if type(permissions[key]) == bool:
+                if key in allow.keys() and allow[key] == True:
+                    effectivePremissions[key] = True;
+                elif key in deny.keys() and deny[key] == True:
+                    effectivePremissions[key] = False;
+                else:
+                    effectivePremissions[key] = permissions[key];
+        isVanity = True;
+        for key in effectivePremissions.keys():
+            if type(effectivePremissions[key]) is bool and effectivePremissions[key] == True:
+                isVanity = False;
+                break;
+        effectivePremissions["isVanity"] = isVanity;
+        return effectivePremissions;
+
+    async def getEffectivePermissions(self, ctx, includeVanity):
+        roleData = self.rolesToHashMap(ctx.guild.roles);
+        categoriesData = self.categoriesToHashMap(ctx.guild.categories);
+        rolePermissions = {};
+        categoryRoleOverwrites = {};
+        channelRoleOverwrites = {};
+        categoryRolePermissions = {};
+        channelRolePermissions = {};
+        for roleKey in roleData.keys():
+            rolePermissions[roleKey] = self.premissionsFromOverwrite(roleData[roleKey]["permissions"], {});
+        for categoryKey in categoriesData.keys():
+            categoryRoleOverwrites[categoryKey] = categoriesData[categoryKey]["overwrites"];
+            channelRoleOverwrites[categoryKey] = {};
+            for channelKey in categoriesData[categoryKey]["stage_channels"]:
+                channelRoleOverwrites[categoryKey][channelKey] = categoriesData[categoryKey]["stage_channels"];
+            for channelKey in categoriesData[categoryKey]["text_channels"]:
+                channelRoleOverwrites[categoryKey][channelKey] = categoriesData[categoryKey]["text_channels"];
+            for channelKey in categoriesData[categoryKey]["voice_channels"]:
+                channelRoleOverwrites[categoryKey][channelKey] = categoriesData[categoryKey]["voice_channels"];
+        for roleKey in rolePermissions.keys():
+            role = rolePermissions[roleKey];
+            for categoryKey in categoryRoleOverwrites.keys():
+                if categoryKey not in categoryRolePermissions.keys():
+                    categoryRolePermissions[categoryKey] = {};
+                category = categoryRoleOverwrites[categoryKey];
+                if roleKey in category.keys():
+                    categoryRole = category[roleKey];
+                    categoryRolePermissions[categoryKey][roleKey] = self.premissionsFromOverwrite(
+                        role,
+                        categoryRole
+                    );
+                else:
+                    categoryRolePermissions[categoryKey][roleKey] = role;
+        for roleKey in rolePermissions.keys():
+            role = rolePermissions[roleKey];
+            for categoryKey in channelRoleOverwrites.keys():
+                if categoryKey not in channelRolePermissions.keys():
+                    channelRolePermissions[categoryKey] = {};
+                category = channelRoleOverwrites[categoryKey];
+                for channelKey in category:
+                    if channelKey not in channelRolePermissions[categoryKey].keys():
+                        channelRolePermissions[categoryKey][channelKey] = {};
+                    channel = category[channelKey];
+                    roleToAssign =  categoryRolePermissions[categoryKey][roleKey];
+                    if roleKey in channel.keys():
+                        channelRole = channel[roleKey];
+                        roleToAssign = self.premissionsFromOverwrite(
+                            categoryRolePermissions[categoryKey][roleKey],
+                            channelRole
+                        );
+                    if includeVanity == True or roleToAssign["isVanity"] == False:
+                        channelRolePermissions[categoryKey][channelKey][roleKey] = roleToAssign;
+        return channelRolePermissions;
+
     @commands.command(brief="Save Server Layout", description="Save server layout to json")
     async def saveServerLayoutToJSON(self, ctx):
         serverData = {};
@@ -432,7 +510,7 @@ class discordLayoutToolClass(commands.Cog, name='Discord Layout Tool'):
         roleData = self.rolesToHashMap(ctx.guild.roles);
         serverData['categoriesData'] = categoriesData;
         serverData['roleData'] = roleData;
-        serverLayoutJSON = json.dumps(serverData, indent=4);
+        serverLayoutJSON = json.dumps(serverData, indent = 4);
         serverLayoutBytes = bytes(serverLayoutJSON, "utf-8");
         await ctx.send("Server Layout JSON", file=discord.File(BytesIO(serverLayoutBytes), "serverLayout.json"));
 
@@ -456,3 +534,69 @@ class discordLayoutToolClass(commands.Cog, name='Discord Layout Tool'):
         else:
             await ctx.send("Must attach a single configuration payload file");
 
+    @commands.command(brief="Gets effective permissions", description="Dumps role permissions for all categories, channels, and roles")
+    async def getEffectivePermissionsJSON(self, ctx, includeVanity):
+        if includeVanity not in ["true", "false"]:
+            await ctx.send("includeVanity must be true or false");
+        else:
+            includeVanityBool = False;
+            if includeVanity == "true":
+                includeVanityBool = True;
+            effectivePermissions = await self.getEffectivePermissions(ctx, includeVanityBool);
+            effectivePermissionsJSON = json.dumps(effectivePermissions, indent = 4);
+            effectivePermissionsBytes = bytes(effectivePermissionsJSON, "utf-8");
+            await ctx.send("Effective Permissions JSON", file=discord.File(BytesIO(effectivePermissionsBytes), "effectivePermissions.json"));
+
+    def doesBGrantAdditionalPremissionToA(self, permissionsA, permissionsB):
+        keySet = set(permissionsA.keys()).union(set(permissionsB.keys()));
+        for key in keySet:
+            if key in permissionsA.keys() and key in permissionsB.keys():
+                permissionA = permissionsA[key];
+                permissionB = permissionsB[key];
+                if type(permissionA) == bool and type(permissionB) == bool:
+                    if permissionA != permissionB and permissionA == False:
+                        return True;
+        return False;
+
+    @commands.command(brief="", description="")
+    async def getRolesThatExtendPermissions(self, ctx):
+        effectivePermissions = await self.getEffectivePermissions(ctx, False);
+        rolesCanExtendPermissions = {};
+        for categoryKey in effectivePermissions.keys():
+            rolesCanExtendPermissions[categoryKey] = {};
+            category = effectivePermissions[categoryKey];
+            for channelKey in category.keys():
+                rolesCanExtendPermissions[categoryKey][channelKey] = {};
+                channel = category[channelKey];
+                for roleAKey in channel.keys():
+                    rolesCanExtendPermissions[categoryKey][channelKey][roleAKey] = [];
+                    permissionsA = channel[roleAKey];
+                    for roleBKey in channel.keys():
+                        permissionsB = channel[roleBKey];
+                        if self.doesBGrantAdditionalPremissionToA(permissionsA, permissionsB):
+                            rolesCanExtendPermissions[categoryKey][channelKey][roleAKey].append(roleBKey);
+        rolesCanExtendPermissionsJSON = json.dumps(rolesCanExtendPermissions, indent = 4);
+        rolesCanExtendPermissionsBytes = bytes(rolesCanExtendPermissionsJSON, "utf-8");
+        await ctx.send("Role Can Extend Permissions JSON", file=discord.File(BytesIO(rolesCanExtendPermissionsBytes), "rolesCanExtendPermissions.json"));
+
+    @commands.command(brief="", description="")
+    async def getPermissionsForRoles(self, ctx):
+        effectivePermissions = await self.getEffectivePermissions(ctx, False);
+        rolesPermissions = {};
+        for categoryKey in effectivePermissions.keys():
+            rolesPermissions[categoryKey] = {};
+            category = effectivePermissions[categoryKey];
+            for channelKey in category.keys():
+                rolesPermissions[categoryKey][channelKey] = {};
+                channel = category[channelKey];
+                for roleKey in channel.keys():
+                    role = channel[roleKey];
+                    for permissionKey in role.keys():
+                        premission = role[permissionKey];
+                        if type(premission) == bool and premission == True:
+                            if permissionKey not in rolesPermissions[categoryKey][channelKey].keys():
+                                rolesPermissions[categoryKey][channelKey][permissionKey] = [];
+                            rolesPermissions[categoryKey][channelKey][permissionKey].append(roleKey);
+        rolesPermissionsJSON = json.dumps(rolesPermissions, indent = 4);
+        rolesPermissionsBytes = bytes(rolesPermissionsJSON, "utf-8");
+        await ctx.send("Role Permissions JSON", file=discord.File(BytesIO(rolesPermissionsBytes), "rolesPermissions.json"));
