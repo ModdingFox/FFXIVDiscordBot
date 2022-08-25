@@ -147,23 +147,17 @@ class privateCategoriesClass(commands.Cog, name='Private Categories'):
                 elif targetDiscordUser is not None:
                     users.append(targetDiscordUser);
             if len(users) > 0 and len(users) == len(commandMatchs):
-                moderatorRoleIds = discordUtils.getRoleByName(ctx.guild, "Moderator");
-                if len(moderatorRoleIds) > 0:
-                    moderatorRoleId = moderatorRoleIds[0];
-                    overwrites = {
-                        ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
-                        ctx.message.author: discord.PermissionOverwrite(add_reactions=True, read_messages=True, view_channel=True, send_messages=True, send_tts_messages=True, embed_links=True, attach_files=True, read_message_history=True, connect=True, speak=True, mute_members=True, deafen_members=True, use_voice_activation=True),
-                        ctx.guild.get_role(moderatorRoleId): discord.PermissionOverwrite(manage_channels=True, add_reactions=True, read_messages=True, view_channel=True, send_messages=True, send_tts_messages=True, embed_links=True, attach_files=True, read_message_history=True, connect=True, speak=True, mute_members=True, deafen_members=True, use_voice_activation=True)
-                    };
-                    newCategory = await ctx.guild.create_category("Private Room", overwrites=overwrites);
-                    newTextChannel = await ctx.guild.create_text_channel("private-text", overwrites=None, category=newCategory);
-                    await newTextChannel.send("This private category will exist as long as the creator is in the voice chat otherwise it be deleted after 30 min of inactivity in the text chat.");
-                    newVoiceChannel = await ctx.guild.create_voice_channel("Private Voice", overwrites=None, category=newCategory);
-                    self.sqlPrivateCategoryCreate(ctx.guild.id, ctx.message.author.id, ctx.message.author.name, newCategory.id);
-                    for user in users:
-                        await newCategory.set_permissions(user, add_reactions=True, read_messages=True, view_channel=True, send_messages=True, send_tts_messages=True, embed_links=True, attach_files=True, read_message_history=True, connect=True, speak=True, use_voice_activation=True);
-                else:
-                    await ctx.send("A Moderator role is required on the server");
+                overwrites = {
+                    ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                    ctx.message.author: discord.PermissionOverwrite(add_reactions=True, read_messages=True, view_channel=True, send_messages=True, send_tts_messages=True, embed_links=True, attach_files=True, read_message_history=True, connect=True, speak=True, mute_members=True, deafen_members=True, use_voice_activation=True)
+                };
+                newCategory = await ctx.guild.create_category("Private Room", overwrites=overwrites);
+                newTextChannel = await ctx.guild.create_text_channel("private-text", category=newCategory);
+                await newTextChannel.send("This private category will exist as long as the creator is in the voice chat otherwise it be deleted after 30 min of inactivity in the text chat.");
+                newVoiceChannel = await ctx.guild.create_voice_channel("Private Voice", category=newCategory);
+                self.sqlPrivateCategoryCreate(ctx.guild.id, ctx.message.author.id, ctx.message.author.name, newCategory.id);
+                for user in users:
+                    await newCategory.set_permissions(user, add_reactions=True, read_messages=True, view_channel=True, send_messages=True, send_tts_messages=True, embed_links=True, attach_files=True, read_message_history=True, connect=True, speak=True, use_voice_activation=True);
             else:
                 await ctx.send("{0} users could not be added to the category".format(len(commandMatchs) - len(users)));
         else:
