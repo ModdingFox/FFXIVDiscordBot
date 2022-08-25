@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 from discord.utils import get
@@ -5,15 +6,15 @@ import re
 import pymysql.cursors
 
 class reactRoleAssignmentClass(commands.Cog, name='React Role Assignment'):
-    def sqlEmoteRoleDelete(self, guildId, messageId):
+    def sqlEmoteRoleDelete(self, guildId, messageId, roleId):
         result = False;
         
         connection = pymysql.connect(host = self.settingsMySql.host, user = self.settingsMySql.user, password = self.settingsMySql.password, cursorclass=pymysql.cursors.DictCursor);
         
         try:
             with connection.cursor() as cursor:
-                sql = "DELETE FROM discord.emoteRoles WHERE guildId = %s AND messageId = %s";
-                cursor.execute(sql, (guildId, messageId));
+                sql = "DELETE FROM discord.emoteRoles WHERE guildId = %s AND messageId = %s AND roleId = %s";
+                cursor.execute(sql, (guildId, messageId, roleId));
                 connection.commit();
                 result = True;
         finally:
@@ -24,7 +25,7 @@ class reactRoleAssignmentClass(commands.Cog, name='React Role Assignment'):
     def sqlEmoteRoleCreate(self, guildId, messageId, roleId, emote):
         result = False;
         
-        self.sqlEmoteRoleDelete(guildId, messageId);
+        self.sqlEmoteRoleDelete(guildId, messageId, roleId);
         
         connection = pymysql.connect(host = self.settingsMySql.host, user = self.settingsMySql.user, password = self.settingsMySql.password, cursorclass=pymysql.cursors.DictCursor);
         
@@ -39,15 +40,15 @@ class reactRoleAssignmentClass(commands.Cog, name='React Role Assignment'):
         
         return result;
     
-    def sqlEmoteRoleGet(self, guildId, messageId):
+    def sqlEmoteRoleGet(self, guildId, messageId, emote):
         result = None;
 
         connection = pymysql.connect(host = self.settingsMySql.host, user = self.settingsMySql.user, password = self.settingsMySql.password, cursorclass=pymysql.cursors.DictCursor);
 
         try:
             with connection.cursor() as cursor:
-                sql = "SELECT roleId, emote FROM discord.emoteRoles WHERE guildId = %s AND messageId = %s";
-                cursor.execute(sql, (guildId, messageId));
+                sql = "SELECT roleId, emote FROM discord.emoteRoles WHERE guildId = %s AND messageId = %s AND emote = %s";
+                cursor.execute(sql, (guildId, messageId, emote));
                 results = cursor.fetchone();
                 if results is not None:
                     result={ "roleId": results["roleId"], "emote": results["emote"] };
@@ -78,8 +79,8 @@ class reactRoleAssignmentClass(commands.Cog, name='React Role Assignment'):
         
         @discordClient.listen()
         async def on_raw_reaction_add(payload):
-            roleAssign = self.sqlEmoteRoleGet(payload.member.guild.id, payload.message_id);
-            if roleAssign is not None and str(roleAssign["emote"]) == str(payload.emoji.name):
+            roleAssign = self.sqlEmoteRoleGet(payload.member.guild.id, payload.message_id, payload.emoji.name.encode('unicode_escape'));
+            if roleAssign is not None:
                role = get(payload.member.guild.roles, id=int(roleAssign["roleId"]));
                await payload.member.add_roles(role);
      
@@ -95,7 +96,7 @@ class reactRoleAssignmentClass(commands.Cog, name='React Role Assignment'):
                     if currentRole.position > highestRolePosition:
                         highestRolePosition = currentRole.position;
                 if targetRole.position < highestRolePosition:
-                    self.sqlEmoteRoleCreate(ctx.guild.id, messageId, targetRole.id, emote);
+                    self.sqlEmoteRoleCreate(ctx.guild.id, messageId, targetRole.id, emote.encode('unicode-escape'));
                     await ctx.send("Assigned {0} to message {1} with emote {2}".format(role, messageId, emote));
                 else:
                     await ctx.send("Your role must be higher than the {0} role".format(role));
