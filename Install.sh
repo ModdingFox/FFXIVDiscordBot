@@ -167,7 +167,7 @@ systemctl enable influxdb
 systemctl start influxdb
 
 yum install -y python39.x86_64 python39-pip.noarch python39-devel.x86_64 gcc openldap-devel.x86_64
-pip-3.9 install discord
+pip-3.9 install discord.py
 pip-3.9 install python-dotenv
 pip-3.9 install PyMySQL
 pip-3.9 install requests
