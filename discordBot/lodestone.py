@@ -22,14 +22,14 @@ class lodestoneClass(commands.Cog, name='Lodestone'):
         for entry in searchResults:
             character = entry.find("a", {"class": "entry__link"});
             freecompany = entry.find("a", {"class": "entry__freecompany__link"});
-            
+
             characterData = {};
             
             if character is not None:
                 characterInfo = character.find("div", {"class": "entry__box entry__box--world"});
                 characterData['characterLink'] = self.lodeStoneBaseUrl + character['href'];
                 characterData['characterName'] = characterInfo.find("p", {"class": "entry__name"}).getText().replace(u'\xa0', u' ');
-                dataCenterAndWorld = re.search("^([a-zA-Z]+) \(([a-zA-Z]+)\)$", characterInfo.find("p", {"class": "entry__world"}).getText().replace(u'\xa0', u' '));
+                dataCenterAndWorld = re.search("^([a-zA-Z]+) \[([a-zA-Z]+)\]$", characterInfo.find("p", {"class": "entry__world"}).getText().replace(u'\xa0', u' '));
                 characterData['characterWorld'] = dataCenterAndWorld.group(1);
                 characterData['characterDataCenter'] = dataCenterAndWorld.group(2);
             
