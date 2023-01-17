@@ -42,8 +42,8 @@ async def loadCogs():
     global client;
     #Load Cogs
     await client.add_cog(botManagement.botManagementClass(client));
-    await client.add_cog(courtesan.courtesanClass(client, settingsMySql));
-    await client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));
+    #await client.add_cog(courtesan.courtesanClass(client, settingsMySql));
+    #await client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));
     await client.add_cog(discordLayoutTool.discordLayoutToolClass(client));
     #await client.add_cog(eventCalendar.eventCalendarClass(client, settingsMySql));
     await client.add_cog(extraStuff.extraStuffClass(client));
@@ -54,7 +54,7 @@ async def loadCogs():
     await client.add_cog(privateCategories.privateCategoriesClass(client, settingsMySql));
     await client.add_cog(radarList.radarListClass(client, settingsMySql));
     await client.add_cog(reactRoleAssignment.reactRoleAssignmentClass(client, settingsMySql));
-    await client.add_cog(staffApplications.staffApplicationsClass(client, settingsMySql));
+    #await client.add_cog(staffApplications.staffApplicationsClass(client, settingsMySql));
     await client.add_cog(textLogging.textLoggingClass(client, settingsMySql));
     await client.add_cog(userBios.userBiosClass(client, settingsMySql));
     await client.add_cog(voiceLogging.voiceLoggingClass(client, settingsMySql));

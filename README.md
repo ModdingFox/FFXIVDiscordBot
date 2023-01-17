@@ -1,4 +1,4 @@
-Install scripts are intended for CentOS 8
+Install scripts are intended for CentOS 9
 
 Update discordBot/conf/discord.json and discordBot/conf/mySql.json
 
