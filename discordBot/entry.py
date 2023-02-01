@@ -52,18 +52,19 @@ async def loadCogs():
     await client.add_cog(normalizeMessages.normalizeMessagesClass(client));
     await client.add_cog(permissions.PermissionsClass(client, settingsMySql));
     await client.add_cog(privateCategories.privateCategoriesClass(client, settingsMySql));
-    await client.add_cog(radarList.radarListClass(client, settingsMySql));
+    #await client.add_cog(radarList.radarListClass(client, settingsMySql));
     await client.add_cog(reactRoleAssignment.reactRoleAssignmentClass(client, settingsMySql));
     #await client.add_cog(staffApplications.staffApplicationsClass(client, settingsMySql));
     await client.add_cog(textLogging.textLoggingClass(client, settingsMySql));
     await client.add_cog(userBios.userBiosClass(client, settingsMySql));
     await client.add_cog(voiceLogging.voiceLoggingClass(client, settingsMySql));
-asyncio.run(loadCogs());
 
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!');
+    await loadCogs();
 
 client.run(settingsDiscord.token);
 
-asyncio.run(main());
+loop = asyncio.get_event_loop();
+loop.run_until_complete(main());
