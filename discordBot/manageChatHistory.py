@@ -97,6 +97,7 @@ class manageChatHistoryClass(commands.Cog, name='Manage Chat History'):
         return result;
 
     async def updateChannel(self, guild, channelId):
+        print("Running cleanup for guild {0} on channel {1}".format(guild.id, channelId));
         channelRetention = self.sqlGetChannelRetention(guild.id, channelId);
         if channelRetention is not None and channelRetention["retentionMinutes"] is not None:
             retentionMinutes = channelRetention["retentionMinutes"];
@@ -108,6 +109,7 @@ class manageChatHistoryClass(commands.Cog, name='Manage Chat History'):
                 if len(messages) > 0:
                     try:
                         await channel.delete_messages(messages);
+                        print("Completed cleanup for guild {0} on channel {1} deleted {3} messages.".format(guild.id, channelId, len(messages)));
                         return len(messages);
                     except ClientException:
                         print("Somehow tried to delete to many messages");
@@ -122,10 +124,12 @@ class manageChatHistoryClass(commands.Cog, name='Manage Chat History'):
         return 0;
 
     async def updateChannels(self, guild):
+        print("Running cleanup for guild {0}".format(guild.id));
         channelsWithRetention = self.sqlGetChannelsWithRetention(guild.id);
         clearedMessages = 0;
         for channelWithRetention in channelsWithRetention:
           clearedMessages += await self.updateChannel(guild, channelWithRetention["channelId"]);
+        print("Completed cleanup for guild {0}. {1} messages removed".format(guild.id, clearedMessages));
         return clearedMessages;
     
     @tasks.loop(minutes=5)

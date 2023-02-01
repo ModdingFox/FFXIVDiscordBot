@@ -1,4 +1,4 @@
-#!/bin/python3.9
+#!/bin/python3.9 -u
 
 from settings import discordSettings, mySqlSettings, ldapSettings
 
