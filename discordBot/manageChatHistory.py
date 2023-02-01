@@ -109,7 +109,7 @@ class manageChatHistoryClass(commands.Cog, name='Manage Chat History'):
                 if len(messages) > 0:
                     try:
                         await channel.delete_messages(messages);
-                        print("Completed cleanup for guild {0} on channel {1} deleted {3} messages.".format(guild.id, channelId, len(messages)));
+                        print("Completed cleanup for guild {0} on channel {1} deleted {2} messages.".format(guild.id, channelId, len(messages)));
                         return len(messages);
                     except ClientException:
                         print("Somehow tried to delete to many messages");
