@@ -1,7 +1,8 @@
-#!/bin/python3.9 -u
+#!/bin/python3 -u
 
 from settings import discordSettings, mySqlSettings, ldapSettings
 
+import audioUtils
 import botManagement
 import clubMenu
 import courtesan
@@ -27,7 +28,7 @@ from discord.ext import tasks
 
 settingsDiscord = discordSettings.discordSettingsClass("conf/discord.json");
 settingsMySql = mySqlSettings.mySqlSettingsClass("conf/mySql.json");
-settingsLdap = ldapSettings.ldapSettingsClass("conf/ldap.json");
+#settingsLdap = ldapSettings.ldapSettingsClass("conf/ldap.json");
 
 intents = discord.Intents.default();
 intents.members = True;
@@ -38,9 +39,10 @@ client = commands.Bot(command_prefix=settingsDiscord.commandPrefix, intents=inte
 async def loadCogs():
     global settingsDiscord;
     global settingsMySql;
-    global settingsLdap;
+    #global settingsLdap;
     global client;
     #Load Cogs
+    await client.add_cog(audioUtils.audioUtilsClass(client));
     await client.add_cog(botManagement.botManagementClass(client));
     #await client.add_cog(courtesan.courtesanClass(client, settingsMySql));
     #await client.add_cog(clubMenu.clubMenuClass(client, settingsMySql));
